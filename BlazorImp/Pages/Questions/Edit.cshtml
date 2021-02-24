@@ -1,0 +1,45 @@
+﻿@page
+@model BlazorImp.Pages.Questions.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>QuestionPage</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="QuestionPage.ID" />
+            <div class="form-group">
+                <label asp-for="QuestionPage.Question" class="control-label"></label>
+                <input asp-for="QuestionPage.Question" class="form-control" />
+                <span asp-validation-for="QuestionPage.Question" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="QuestionPage.Answer" class="control-label"></label>
+                <input asp-for="QuestionPage.Answer" class="form-control" />
+                <span asp-validation-for="QuestionPage.Answer" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="QuestionPage.Context" class="control-label"></label>
+                <input asp-for="QuestionPage.Context" class="form-control" />
+                <span asp-validation-for="QuestionPage.Context" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
