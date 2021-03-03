@@ -16,6 +16,12 @@ Welcome to your new app.
 </EditForm>
 
 @code {
+    public class ExampleModel
+    {
+        public string Name { get; set; }
+        public ExampleModel() { Name = "Roman"; }
+    }
+
     private ExampleModel exampleModel = new ExampleModel();
 
     private void HandleValidSubmit()

@@ -12,8 +12,7 @@ namespace BlazorImp.Data
         public BlazorImpContext (DbContextOptions<BlazorImpContext> options)
             : base(options)
         {
-        }
 
-        public DbSet<BlazorImp.Models.QuestionPage> QuestionPage { get; set; }
+        }
     }
 }

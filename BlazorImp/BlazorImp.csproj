@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>aspnet-BlazorImp-3BBE4D5C-63AA-4E1A-B0E7-49AD48AE7797</UserSecretsId>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,7 +19,11 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.1" />
     
     <!--Not sure if i SHOULD do this; see bottom of https://docs.microsoft.com/en-us/aspnet/core/fundamentals/?view=aspnetcore-5.0&tabs=windows for details-->
-    <Content Update="wwwroot\local\**\*.*" CopyToPublishDirectory="Never"/>
+    <Content Update="wwwroot\local\**\*.*" CopyToPublishDirectory="Never" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\" />
   </ItemGroup>
 
 </Project>
