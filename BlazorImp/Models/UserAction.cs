@@ -10,8 +10,6 @@ namespace BlazorImp.Models
     public class UserAction
     {
         public int UserActionId { get; set; }
-
-        public int? UserID { get; set; }
         public IdentityUser? User { get; set; }
 
         public string? Description { get; set; }
