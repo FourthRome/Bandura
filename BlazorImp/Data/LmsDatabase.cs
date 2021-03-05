@@ -7,6 +7,12 @@ namespace BlazorImp.Data
 {
     public class LmsDatabase : ILmsDatabase
     {
+        private readonly BlazorImpContext dbContext;
+
+        public LmsDatabase(BlazorImpContext context)
+        {
+            dbContext = context;
+        }
 
     }
 }

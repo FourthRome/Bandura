@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.30626.31
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorImp", "BlazorImp\BlazorImp.csproj", "{64D3CFFA-8601-4893-8585-EC791088BD08}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contracts", "Contracts\Contracts.csproj", "{8DBF116A-2CF4-4834-A463-7B9CE6533593}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{64D3CFFA-8601-4893-8585-EC791088BD08}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64D3CFFA-8601-4893-8585-EC791088BD08}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64D3CFFA-8601-4893-8585-EC791088BD08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DBF116A-2CF4-4834-A463-7B9CE6533593}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DBF116A-2CF4-4834-A463-7B9CE6533593}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DBF116A-2CF4-4834-A463-7B9CE6533593}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DBF116A-2CF4-4834-A463-7B9CE6533593}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
