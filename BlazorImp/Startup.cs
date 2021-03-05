@@ -36,6 +36,7 @@ namespace BlazorImp
 
             services.AddDbContext<BlazorImpContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("BlazorImpContext")));
+            services.AddSingleton<ILmsDatabase>(new LmsDatabase());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

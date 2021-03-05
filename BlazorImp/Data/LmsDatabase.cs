@@ -9,6 +9,10 @@ namespace BlazorImp.Data
     {
         private readonly BlazorImpContext dbContext;
 
+        public LmsDatabase()
+        {
+        }
+
         public LmsDatabase(BlazorImpContext context)
         {
             dbContext = context;
