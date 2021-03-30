@@ -16,14 +16,17 @@ namespace BlazorImp.Models
     {
         public int QuestionId { get; set; }
 
-        public string? Value { get; set; }
+        public string Value { get; set; }
 
         public QuestionType QuestionType { get; set; }
 
-        public RightAnswer? RightAnswer { get; set; }
+        public int RightAnswerId { get; set; }
+        public RightAnswer RightAnswer { get; set; }
 
-        public QuizDetails? QuizDetails { get; set; }
+        public int? QuizDataId { get; set; }
+        public QuizData? QuizData { get; set; }
 
+        public int? AdditionalDataId { get; set; }
         public QuestionAdditionalData? AdditionalData { get; set; }
     }
 }

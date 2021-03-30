@@ -3,7 +3,6 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>aspnet-BlazorImp-3BBE4D5C-63AA-4E1A-B0E7-49AD48AE7797</UserSecretsId>
-    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,6 +23,7 @@
 
   <ItemGroup>
     <Folder Include="Areas\" />
+    <Folder Include="Pages\Courses\" />
   </ItemGroup>
 
 </Project>

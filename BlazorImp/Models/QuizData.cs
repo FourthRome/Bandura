@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace BlazorImp.Models
 {
-    public class QuestionAdditionalData
+    public class QuizData
     {
-        public int QuestionAdditionalDataId { get; set; }
+        public int QuizDataId { get; set; }
 
         public int QuestionId { get; set; }
         public Question Question { get; set; }

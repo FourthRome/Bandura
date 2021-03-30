@@ -1,42 +1,6 @@
-﻿@page "/"
+﻿<h3>Index</h3>
 
-<h1>Тестовая страница</h1>
 
-@{ 
-    var @question = "Здесь будет вопрос из базы";
-}
-
-<div>@question</div>
-
-Здесь должен выводиться случайный вопрос из базы данных.
-
-<EditForm Model="@exampleModel" OnValidSubmit="@HandleValidSubmit" method="post">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-
-    <InputText id="answer" @bind-Value="exampleModel.Answer" />
-
-    <button type="submit">Ответить</button>
-</EditForm>
 
 @code {
-    public class ExampleModel
-    {
-        public string? Answer { get; set; }
-        public ExampleModel() { }
-
-        public void OnPost()
-        {
-
-        }
-    }
-
-    private ExampleModel exampleModel = new ExampleModel();
-
-    private void HandleValidSubmit()
-    {
-
-    }
-
-
 }

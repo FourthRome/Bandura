@@ -9,19 +9,30 @@ namespace BlazorImp.Data
 {
     public class BlazorImpContext : DbContext
     {
-        public DbSet<Question>? QuestionsEntity { get; set; }
+        public DbSet<Question> Question { get; set; }
 
-        public DbSet<QuestionAdditionalData>? QuestionAdditionalDataEntity { get; set; }
-        public DbSet<RightAnswer>? RightAnswersEntity { get; set; }
+        public DbSet<QuestionAdditionalData> QuestionAdditionalData { get; set; }
 
-        public DbSet<QuestionAttempt>? QuestionAttemptsEntity { get; set; }
+        public DbSet<RightAnswer> RightAnswer { get; set; }
 
-        public DbSet<QuizDetails>? QuizDetailsEntity { get; set; }
+        public DbSet<QuestionAttempt> QuestionAttempt{ get; set; }
 
-        public DbSet<UserAction>? UserActionsEntity { get; set; }
+        public DbSet<QuizData> QuizData{ get; set; }
+
+        public DbSet<UserAction> UserActions { get; set; }
 
         public BlazorImpContext (DbContextOptions<BlazorImpContext> options) : base(options)
         {
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Question>().ToTable("Questions");
+            modelBuilder.Entity<QuestionAdditionalData>().ToTable("QuestionAdditionalDatas");
+            modelBuilder.Entity<RightAnswer>().ToTable("RightAnswers");
+            modelBuilder.Entity<QuestionAttempt>().ToTable("QuestionAttempts");
+            modelBuilder.Entity<QuizData>().ToTable("QuizDatas");
+            modelBuilder.Entity<UserAction>().ToTable("UserActions");
         }
     }
 }

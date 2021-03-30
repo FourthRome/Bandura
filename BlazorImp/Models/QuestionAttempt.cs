@@ -10,15 +10,15 @@ namespace BlazorImp.Models
     {
         public int QuestionAttemptId { get; set; }
 
-        public int? UserId { get; set; }
-        public IdentityUser? User { get; set; }
+        public int UserId { get; set; }
+        public IdentityUser User { get; set; }
 
         public int AttemptNumber { get; set; }
 
-        public int? QuestionId { get; set; }
-        public Question? Question { get; set; }
+        public int QuestionId { get; set; }
+        public Question Question { get; set; }
 
-        public string? UserInput { get; set; }
+        public string UserInput { get; set; }
 
         public double? Grade { get; set; }
     }
