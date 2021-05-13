@@ -1,0 +1,39 @@
+﻿@namespace BlazorImp.CustomComponents
+<h3>VideoComponent</h3>
+
+<p>@TopText</p>
+
+<!-- TODO: switch to server-hosted videos -->
+<!-- Thanks to https://stackoverflow.com/users/2534840/orangutan for the wonderful snippet
+ located here: https://stackoverflow.com/a/60228328 -->
+<div>
+    <!--class="youtube-wrapper"-->
+    <div>
+        <!--class="youtube-container"-->
+        <iframe width="560"
+                height="315"
+                src="@(VideoURI + PlayerOptions)"
+                title="YouTube video player"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                controls=0
+                allowfullscreen>
+        </iframe>
+    </div>
+</div>
+
+
+<p>@BottomText</p>
+
+@code {
+    [Parameter]
+    public string TopText { get; set; } = "Hello,";
+
+    [Parameter]
+    public string BottomText { get; set; } = "World!";
+
+    [Parameter]
+    public string VideoURI { get; set; } = "https://www.youtube.com/embed/dQw4w9WgXcQ";
+
+    private string PlayerOptions { get; set; } = "?disablekb=1&iv_load_policy=3&modestbranding=1";
+}
