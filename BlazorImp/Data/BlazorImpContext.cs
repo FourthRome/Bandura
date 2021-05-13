@@ -9,17 +9,12 @@ namespace BlazorImp.Data
 {
     public class BlazorImpContext : DbContext
     {
-        public DbSet<Question> Question { get; set; }
+        public DbSet<Assignment> Assignment { get; set; }
+        public DbSet<AssignmentSeries> AssignmentSeries { get; set; }
+        public DbSet<AssignmentType> AssignmentType { get; set; }
+        public DbSet<Material> Material { get; set; }
+        public DbSet<UserAnswer> UserAnswer { get; set; }
 
-        public DbSet<QuestionAdditionalData> QuestionAdditionalData { get; set; }
-
-        public DbSet<RightAnswer> RightAnswer { get; set; }
-
-        public DbSet<QuestionAttempt> QuestionAttempt{ get; set; }
-
-        public DbSet<QuizData> QuizData{ get; set; }
-
-        public DbSet<UserAction> UserActions { get; set; }
 
         public BlazorImpContext (DbContextOptions<BlazorImpContext> options) : base(options)
         {
@@ -27,12 +22,11 @@ namespace BlazorImp.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Question>().ToTable("Questions");
-            modelBuilder.Entity<QuestionAdditionalData>().ToTable("QuestionAdditionalDatas");
-            modelBuilder.Entity<RightAnswer>().ToTable("RightAnswers");
-            modelBuilder.Entity<QuestionAttempt>().ToTable("QuestionAttempts");
-            modelBuilder.Entity<QuizData>().ToTable("QuizDatas");
-            modelBuilder.Entity<UserAction>().ToTable("UserActions");
+            modelBuilder.Entity<Assignment>().ToTable("Assignment");
+            modelBuilder.Entity<AssignmentSeries>().ToTable("AssignmentSeries");
+            modelBuilder.Entity<AssignmentType>().ToTable("AssignmentType");
+            modelBuilder.Entity<Material>().ToTable("Material");
+            modelBuilder.Entity<UserAnswer>().ToTable("UserAnswer");
         }
     }
 }
