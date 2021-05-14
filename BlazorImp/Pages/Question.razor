@@ -1,0 +1,17 @@
+﻿@page "/question"
+
+<h3>Question</h3>
+
+<QuestionComponent />
+
+<AnswerComponent />
+
+@code {
+    [Parameter]
+    public int CourseId { get; set; }
+
+    [Parameter]
+    public int QuestionId { get; set; }
+
+    public int SessionId { get; set; }
+}
