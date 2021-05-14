@@ -1,0 +1,22 @@
+﻿@page "/tutorial"
+
+<h3>@HeaderText</h3>
+
+@if (HasVideo)
+{
+    <VideoComponent />
+}
+
+<NavigationComponent />
+
+@code {
+    [Parameter]
+    public int CourseId { get; set; }
+
+    [Parameter]
+    public int TutorialId { get; set; }
+
+    private string HeaderText { get; set; } = "Обучающий материал";
+
+    private bool HasVideo { get; set; } = true;
+}
