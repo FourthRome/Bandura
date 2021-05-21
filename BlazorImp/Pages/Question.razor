@@ -1,10 +1,14 @@
-﻿@page "/question"
+﻿@page "/question/{SessionId}"
+
+@inject NavigationManager NavManager
 
 <h3>Question</h3>
 
 <QuestionComponent />
 
 <AnswerComponent />
+
+<NavigationComponent NextURI="@($"/information/{SessionId}")"/>
 
 @code {
     [Parameter]
@@ -13,5 +17,6 @@
     [Parameter]
     public int QuestionId { get; set; }
 
-    public int SessionId { get; set; }
+    [Parameter]
+    public string SessionId { get; set; }
 }

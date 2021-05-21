@@ -1,8 +1,12 @@
-﻿@page "/Information"
+﻿@page "/information/{SessionId}"
+
+@inject NavigationManager NavManager
 
 <h3>@HeaderText</h3>
 
 <p>@MainText</p>
+
+<NavigationComponent NextURI="@($"/tutorial/{SessionId}")"/>
 
 @code {
     [Parameter]
@@ -11,7 +15,8 @@
     [Parameter]
     public int TutorialId { get; set; }
 
-    public int SessionId { get; set; }
+    [Parameter]
+    public string SessionId { get; set; }
 
     private string HeaderText { get; set; } = "Информационная страница";
 

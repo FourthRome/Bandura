@@ -34,8 +34,11 @@ namespace BlazorImp
             services.AddServerSideBlazor();
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddDbContext<BlazorImpContext>(options =>
+            services.AddDbContextFactory<BlazorImpContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("BlazorImpContext")));
+
+            //services.AddDbContext<BlazorImpContext>(options =>
+            //        options.UseSqlServer(Configuration.GetConnectionString("BlazorImpContext")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

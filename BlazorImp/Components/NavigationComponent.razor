@@ -1,12 +1,17 @@
 ﻿@namespace BlazorImp.CustomComponents
 
+@inject NavigationManager NavManager
+
 <h3>NavigationComponent</h3>
 
 <button type="button" @onclick="MoveForward">Продолжить</button>
 
 @code {
+    [Parameter]
+    public string NextURI { get; set; }
+
     public void MoveForward()
     {
-
+        NavManager.NavigateTo(NextURI);
     }
 }

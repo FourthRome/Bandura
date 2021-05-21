@@ -1,4 +1,6 @@
-﻿@page "/tutorial"
+﻿@page "/tutorial/{SessionId}"
+
+@inject NavigationManager NavManager
 
 <h3>@HeaderText</h3>
 
@@ -7,7 +9,7 @@
     <VideoComponent />
 }
 
-<NavigationComponent />
+<NavigationComponent NextURI="@($"/question/{SessionId}")"/>
 
 @code {
     [Parameter]
@@ -16,7 +18,8 @@
     [Parameter]
     public int TutorialId { get; set; }
 
-    public int SessionId { get; set; }
+    [Parameter]
+    public string SessionId { get; set; }
 
     private string HeaderText { get; set; } = "Обучающий материал";
 

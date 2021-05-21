@@ -1,0 +1,30 @@
+﻿@page "/additioncourse"
+
+@using Microsoft.EntityFrameworkCore
+@using BlazorImp.Data
+
+@inject IDbContextFactory<BlazorImpContext> DbFactory
+@inject NavigationManager NavManager
+
+<p>Введите номер участника:</p>
+
+<input @bind="@ParticipantId" />
+
+<button type="button" @onclick="StartSession">Начать</button>
+
+@code {
+    [Parameter]
+    public string ParticipantId { get; set; }
+
+    [Parameter]
+    public string SessionId { get; set; }
+
+    public async Task StartSession()
+    {
+        SessionId = ParticipantId;
+
+        using var context = DbFactory.CreateDbContext();
+
+        NavManager.NavigateTo($"/information/{SessionId}");
+    }
+}
