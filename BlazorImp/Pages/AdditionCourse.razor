@@ -14,17 +14,26 @@
 
 @code {
     [Parameter]
-    public string ParticipantId { get; set; }
-
-    [Parameter]
-    public string SessionId { get; set; }
+    public int ParticipantId { get; set; }
 
     public async Task StartSession()
     {
-        SessionId = ParticipantId;
-
         using var context = DbFactory.CreateDbContext();
 
-        NavManager.NavigateTo($"/information/{SessionId}");
+        var session = await context.Session.SingleOrDefaultAsync(
+            s => s.ParticipantID == ParticipantId);
+
+        if (session != null)
+        {
+            NavManager.NavigateTo(session.CurrentPage);
+        }
+        else
+        {
+            // TODO: the first page for a session should be derived from the module's table in a database
+            context.Session.Add(new Models.Session { ParticipantID = ParticipantId, CourseID = 1, CurrentPage = $"/Information/{ParticipantId}"});
+            await context.SaveChangesAsync();
+            NavManager.NavigateTo($"/Information/{ParticipantId}");
+        }
+
     }
 }

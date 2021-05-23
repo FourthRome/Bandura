@@ -9,10 +9,10 @@ namespace BlazorImp.Models
     {
         public int SessionID { get; set; }
 
-        public int UserNumber { get; set; }
+        public int ParticipantID { get; set; }
 
         public int CourseID { get; set; }
 
-        public int CurrentPageID { get; set; }
+        public string CurrentPage { get; set; }
     }
 }
