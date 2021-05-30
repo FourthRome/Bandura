@@ -15,7 +15,8 @@ namespace BlazorImp.Data
         public DbSet<Material> Material { get; set; }
         public DbSet<UserAnswer> UserAnswer { get; set; }
         public DbSet<Session> Session { get; set; }
-
+        public DbSet<Content> Content { get; set; }
+        public DbSet<Module> Module { get; set; }
 
         public BlazorImpContext (DbContextOptions<BlazorImpContext> options) : base(options)
         {
@@ -29,6 +30,8 @@ namespace BlazorImp.Data
             modelBuilder.Entity<Material>().ToTable("Material");
             modelBuilder.Entity<UserAnswer>().ToTable("UserAnswer");
             modelBuilder.Entity<Session>().ToTable("Session");
+            modelBuilder.Entity<Content>().ToTable("Content");
+            modelBuilder.Entity<Module>().ToTable("Module");
         }
     }
 }

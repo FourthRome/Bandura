@@ -1,0 +1,90 @@
+﻿@page "/module/{ModuleID:int}"
+
+@using Microsoft.EntityFrameworkCore
+@using BlazorImp.Data
+@using BlazorImp.CustomComponents
+@using BlazorImp.Models
+
+@inject IDbContextFactory<BlazorImpContext> DbFactory
+@inject NavigationManager NavManager
+
+<!-- TODO: the following is a REALLY bad idea... -->
+@if (Session == null)
+{
+    <p>Введите номер участника:</p>
+
+    <input @bind="@UserID" />
+
+    <button type="button" @onclick="StartSession">Начать</button>
+}
+else if (Content.Type == "information")
+{
+    <Information></Information>
+}
+else if (Content.Type == "question")
+{
+    <Question></Question>
+}
+else if (Content.Type == "tutorial")
+{
+    <Tutorial></Tutorial>
+}
+
+
+@code {
+    [Parameter]
+    public int ModuleID { get; set; }
+
+    public int UserID { get; set; } = -1;
+
+    public Session Session { get; set; }
+
+    public Content Content { get; set; }
+
+    // TODO: obviously not the best way to make a one-page app
+
+    public async Task StartSession()
+    {
+        using var context = DbFactory.CreateDbContext();
+
+        Session = await context.Session.SingleAsync(
+            s => s.ModuleID == ModuleID && s.UserID == UserID);
+
+        // TODO: is this really the best pattern?
+        if (Session == null)
+        {
+            context.Session.Add(new Models.Session { UserID = UserID, ModuleID = ModuleID, StepNumber = 0 });
+            await context.SaveChangesAsync();
+            // TODO: here and forth: single or something else?
+            Session = await context.Session.SingleAsync(
+                s => s.ModuleID == ModuleID && s.UserID == UserID);
+        }
+
+        await LoadNextStep();
+
+    }
+
+    public async Task LoadNextStep()
+    {
+        using var context = DbFactory.CreateDbContext();
+
+        if (Session != null)
+        {
+            Session = await context.Session.SingleAsync(
+                s => s.SessionID == Session.SessionID);
+
+            Session.StepNumber += 1;
+            await context.SaveChangesAsync();
+
+            var moduleStep = await context.Module.SingleAsync(
+                m => m.ModuleID == ModuleID && m.StepNumber == Session.StepNumber);
+
+            Content = await context.Content.SingleAsync(
+                c => c.ContentID == moduleStep.ContentID);
+        }
+        else
+        {
+            // TODO: handle null
+        }
+    }
+}

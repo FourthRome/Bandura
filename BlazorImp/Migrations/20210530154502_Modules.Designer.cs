@@ -3,14 +3,16 @@ using BlazorImp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BlazorImp.Migrations
 {
     [DbContext(typeof(BlazorImpContext))]
-    partial class BlazorImpContextModelSnapshot : ModelSnapshot
+    [Migration("20210530154502_Modules")]
+    partial class Modules
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

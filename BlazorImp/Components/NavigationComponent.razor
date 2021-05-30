@@ -1,6 +1,7 @@
 ﻿@namespace BlazorImp.CustomComponents
 
 @inject NavigationManager NavManager
+@using BlazorImp.Models
 
 <h3>NavigationComponent</h3>
 
@@ -8,7 +9,11 @@
 
 @code {
     [Parameter]
+    public Content Content { get; set; }
+
+    [Parameter]
     public string NextURI { get; set; }
+
 
     public void MoveForward()
     {

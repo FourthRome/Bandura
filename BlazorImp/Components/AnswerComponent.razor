@@ -1,11 +1,15 @@
 ﻿@namespace BlazorImp.CustomComponents
-<h3>AnswerComponent</h3>
+
+@using BlazorImp.Models
 
 <input placeholder="Напишите решение здесь" />
 <button @onclick="SendAnswer" disabled="@(AttemptsLeft <= 0)">Ответить</button>
 <p>@($"Осталось попыток: {AttemptsLeft}")</p>
 
 @code {
+    [Parameter]
+    public Content Content { get; set; }
+
     [Parameter]
     public int AttemptsLeft { get; set; } = 1;
 

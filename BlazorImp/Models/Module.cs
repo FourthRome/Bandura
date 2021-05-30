@@ -5,11 +5,10 @@ using System.Threading.Tasks;
 
 namespace BlazorImp.Models
 {
-    public class Session
+    public class Module
     {
-        public int SessionID { get; set; }
-        public int UserID { get; set; }
         public int ModuleID { get; set; }
         public int StepNumber { get; set; }
+        public int ContentID { get; set; }
     }
 }

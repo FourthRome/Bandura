@@ -1,15 +1,18 @@
 ﻿@namespace BlazorImp.CustomComponents
 
-<h3>QuestionComponent</h3>
+@using BlazorImp.Models 
 
-<h4>@QuestionHeader</h4>
+<h4>@Header</h4>
 
-<p>@QuestionBody</p>
+<p>@Body</p>
 
 @code {
     [Parameter]
-    public string QuestionHeader { get; set; } = "Заголовок вопроса";
+    public Content Content { get; set; }
 
     [Parameter]
-    public string QuestionBody { get; set; } = "Тело вопроса";
+    public string Header { get; set; } = "Заголовок вопроса";
+
+    [Parameter]
+    public string Body { get; set; } = "Тело вопроса";
 }

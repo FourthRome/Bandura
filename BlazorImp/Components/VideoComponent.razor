@@ -1,7 +1,8 @@
 ﻿@namespace BlazorImp.CustomComponents
-<h3>VideoComponent</h3>
 
-<p>@TopText</p>
+@using BlazorImp.Models
+
+<p>@Header</p>
 
 <!-- TODO: switch to server-hosted videos -->
 <!-- Thanks to https://stackoverflow.com/users/2534840/orangutan for the wonderful snippet
@@ -23,14 +24,17 @@
 </div>
 
 
-<p>@BottomText</p>
+<p>@Footer</p>
 
 @code {
     [Parameter]
-    public string TopText { get; set; } = "Hello,";
+    public Content Content { get; set; }
 
     [Parameter]
-    public string BottomText { get; set; } = "World!";
+    public string Header { get; set; } = "Hello,";
+
+    [Parameter]
+    public string Footer { get; set; } = "World!";
 
     [Parameter]
     public string VideoURI { get; set; } = "https://www.youtube.com/embed/dQw4w9WgXcQ";

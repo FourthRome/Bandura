@@ -1,27 +1,16 @@
-﻿@page "/tutorial/{SessionId}"
-
-@inject NavigationManager NavManager
-
-<h3>@HeaderText</h3>
+﻿@using BlazorImp.Models
 
 @if (HasVideo)
 {
-    <VideoComponent />
+    <VideoComponent/>
 }
 
-<NavigationComponent NextURI="@($"/question/{SessionId}")"/>
+<NavigationComponent/>
 
 @code {
-    [Parameter]
-    public int CourseId { get; set; }
+    public Content Content { get; set; }
 
-    [Parameter]
-    public int TutorialId { get; set; }
-
-    [Parameter]
-    public string SessionId { get; set; }
-
-    private string HeaderText { get; set; } = "Обучающий материал";
+    private string Header { get; set; } = "Обучающий материал";
 
     private bool HasVideo { get; set; } = true;
 }

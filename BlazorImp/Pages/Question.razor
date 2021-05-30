@@ -1,22 +1,10 @@
-﻿@page "/question/{SessionId}"
+﻿@using BlazorImp.Models 
 
-@inject NavigationManager NavManager
+<QuestionComponent Content=Content/>
 
-<h3>Question</h3>
-
-<QuestionComponent />
-
-<AnswerComponent />
-
-<NavigationComponent NextURI="@($"/information/{SessionId}")"/>
+<AnswerComponent Content=Content/>
 
 @code {
     [Parameter]
-    public int CourseId { get; set; }
-
-    [Parameter]
-    public int QuestionId { get; set; }
-
-    [Parameter]
-    public string SessionId { get; set; }
+    public Content Content { get; set; }
 }
