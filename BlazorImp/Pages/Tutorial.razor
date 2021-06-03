@@ -1,16 +1,35 @@
-﻿@using BlazorImp.Models
+﻿@using Newtonsoft.Json
+@using BlazorImp.Models
+@using BlazorImp.CustomComponents 
+
+<h3>@Header</h3>
 
 @if (HasVideo)
 {
-    <VideoComponent/>
+    <VideoComponent VideoURI=@VideoURI/>
 }
 
-<NavigationComponent/>
+<p>@Body</p>
+
 
 @code {
+    [Parameter]
     public Content Content { get; set; }
 
-    private string Header { get; set; } = "Обучающий материал";
+    private string Header { get; set; }
 
-    private bool HasVideo { get; set; } = true;
+    private string Body { get; set; }
+
+    private bool HasVideo { get; set; }
+
+    private string VideoURI { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        Dictionary<string, string> content = JsonConvert.DeserializeObject<Dictionary<string, string>>(Content.ContentJson);
+        Header = content["Header"];
+        Body = content["Body"];
+        HasVideo = Convert.ToBoolean(content["HasVideo"]);
+        VideoURI = content["VideoURI"];
+    }
 }

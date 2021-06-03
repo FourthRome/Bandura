@@ -1,10 +1,23 @@
-﻿@using BlazorImp.Models 
+﻿@using Newtonsoft.Json 
+@using BlazorImp.Models 
+@using BlazorImp.CustomComponents 
 
-<QuestionComponent Content=Content/>
+<QuestionComponent Header="Header" Body="Body"/>
 
-<AnswerComponent Content=Content/>
+<AnswerComponent/>
 
 @code {
     [Parameter]
     public Content Content { get; set; }
+
+    public string Header { get; set; }
+
+    public string Body { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        Dictionary<string, string> content = JsonConvert.DeserializeObject<Dictionary<string, string>>(Content.ContentJson);
+        Header = content["Header"];
+        Body = content["Body"];
+    }
 }

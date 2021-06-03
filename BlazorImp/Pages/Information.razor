@@ -1,17 +1,24 @@
 ﻿@inject NavigationManager NavManager
 
+@using Newtonsoft.Json
 @using BlazorImp.Models
 
 <h3>@Header</h3>
 
 <p>@Body</p>
 
-
 @code {
     [Parameter]
     public Content Content { get; set; }
 
-    private string Header { get; set; } = "Информационная страница";
+    private string Header { get; set; }
 
-    private string Body { get; set; } = "Здесь указана полезная информация";
+    private string Body { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        Dictionary<string, string> content = JsonConvert.DeserializeObject<Dictionary<string, string>>(Content.ContentJson);
+        Header = content["Header"];
+        Body = content["Body"];
+    }
 }

@@ -8,10 +8,10 @@
 
 @code {
     [Parameter]
-    public Content Content { get; set; }
+    public int AttemptsLeft { get; set; } = 1;
 
     [Parameter]
-    public int AttemptsLeft { get; set; } = 1;
+    public string Answer { get; set; }
 
     public void SendAnswer()
     {

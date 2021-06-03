@@ -7,7 +7,6 @@
 
 @inject IDbContextFactory<BlazorImpContext> DbFactory
 @inject NavigationManager NavManager
-
 <!-- TODO: the following is a REALLY bad idea... -->
 @if (Session == null)
 {
@@ -19,15 +18,18 @@
 }
 else if (Content.Type == "information")
 {
-    <Information></Information>
+    <Information Content=Content></Information>
+    <button @onclick=LoadNextStep>Продолжить</button>
 }
 else if (Content.Type == "question")
 {
-    <Question></Question>
+    <Question Content=Content></Question>
+    <button @onclick=LoadNextStep>Продолжить</button>
 }
 else if (Content.Type == "tutorial")
 {
-    <Tutorial></Tutorial>
+    <Tutorial Content=Content></Tutorial>
+    <button @onclick=LoadNextStep>Продолжить</button>
 }
 
 
@@ -73,9 +75,6 @@ else if (Content.Type == "tutorial")
             Session = await context.Session.SingleOrDefaultAsync(
                 s => s.SessionID == Session.SessionID);
 
-            //Session.StepNumber += 1;
-            //await context.SaveChangesAsync();
-
             var moduleStep = await context.Module.SingleOrDefaultAsync(
                 m => m.ModuleID == ModuleID && m.StepNumber == Session.StepNumber);
 
@@ -88,5 +87,27 @@ else if (Content.Type == "tutorial")
         }
     }
 
+    public async Task LoadNextStep()
+    {
+        using var context = DbFactory.CreateDbContext();
 
+        if (Session != null)
+        {
+            Session = await context.Session.SingleOrDefaultAsync(
+                s => s.SessionID == Session.SessionID);
+
+            Session.StepNumber += 1;
+            await context.SaveChangesAsync();
+
+            var moduleStep = await context.Module.SingleOrDefaultAsync(
+                            m => m.ModuleID == ModuleID && m.StepNumber == Session.StepNumber);
+
+            Content = await context.Content.SingleOrDefaultAsync(
+                c => c.ContentID == moduleStep.ContentID);
+        }
+        else
+        {
+            // TODO: handle null
+        }
+    }
 }

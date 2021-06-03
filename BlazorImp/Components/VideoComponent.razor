@@ -1,9 +1,5 @@
 ﻿@namespace BlazorImp.CustomComponents
 
-@using BlazorImp.Models
-
-<p>@Header</p>
-
 <!-- TODO: switch to server-hosted videos -->
 <!-- Thanks to https://stackoverflow.com/users/2534840/orangutan for the wonderful snippet
  located here: https://stackoverflow.com/a/60228328 -->
@@ -24,20 +20,9 @@
 </div>
 
 
-<p>@Footer</p>
-
 @code {
     [Parameter]
-    public Content Content { get; set; }
-
-    [Parameter]
-    public string Header { get; set; } = "Hello,";
-
-    [Parameter]
-    public string Footer { get; set; } = "World!";
-
-    [Parameter]
-    public string VideoURI { get; set; } = "https://www.youtube.com/embed/dQw4w9WgXcQ";
+    public string VideoURI { get; set; }
 
     private string PlayerOptions { get; set; } = "?disablekb=1&iv_load_policy=3&modestbranding=1";
 }
