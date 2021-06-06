@@ -17,6 +17,7 @@ namespace BlazorImp.Data
         public DbSet<Session> Session { get; set; }
         public DbSet<Content> Content { get; set; }
         public DbSet<Module> Module { get; set; }
+        public DbSet<Attempt> Attempt { get; set; }
 
         public BlazorImpContext (DbContextOptions<BlazorImpContext> options) : base(options)
         {
@@ -32,6 +33,7 @@ namespace BlazorImp.Data
             modelBuilder.Entity<Session>().ToTable("Session");
             modelBuilder.Entity<Content>().ToTable("Content");
             modelBuilder.Entity<Module>().ToTable("Module");
+            modelBuilder.Entity<Attempt>().ToTable("Attempt");
         }
     }
 }
