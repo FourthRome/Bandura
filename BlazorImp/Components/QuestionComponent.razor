@@ -8,11 +8,8 @@
 
 @code {
     [Parameter]
-    public Content Content { get; set; }
+    public string Header { get; set; };
 
     [Parameter]
-    public string Header { get; set; } = "Заголовок вопроса";
-
-    [Parameter]
-    public string Body { get; set; } = "Тело вопроса";
+    public string Body { get; set; };
 }
