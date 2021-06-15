@@ -24,7 +24,7 @@ else if (Content.Type == "information")
 }
 else if (Content.Type == "question")
 {
-    <Question ContentJson="@Content.ContentJson"></Question>
+    <Question ContentJson="@Content.ContentJson" ModuleID=@ModuleID StepNumber=@Session.StepNumber UserID=@UserID></Question>
     <button @onclick=LoadNextStep>Продолжить</button>
 }
 else if (Content.Type == "tutorial")

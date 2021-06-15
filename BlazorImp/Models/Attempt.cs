@@ -9,7 +9,9 @@ namespace BlazorImp.Models
     {
         public int AttemptID { get; set; }
 
-        public int ContentID { get; set; }
+        public int ModuleID { get; set; }
+
+        public int StepNumber { get; set; }
 
         public int UserID { get; set; }
 

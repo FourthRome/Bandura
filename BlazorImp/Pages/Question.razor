@@ -6,7 +6,7 @@
 
 @inject IDbContextFactory<BlazorImpContext> DbFactory
 
-<QuestionComponent Header="Header" Body="Body" />
+<QuestionComponent Header="@Header" Body="@Body" />
 
 <input placeholder="Напишите решение здесь" />
 <button @onclick="SendAnswer" disabled="@(AttemptsLeft <= 0)">Ответить</button>
@@ -16,8 +16,12 @@
     [Parameter]
     public string ContentJson { get; set; }
 
+    // TODO: remove this leak of internal databases' structure
     [Parameter]
-    public int ContentID { get; set; }
+    public int ModuleID { get; set; }
+
+    [Parameter]
+    public int StepNumber { get; set; }
 
     // TODO: can I abstract all db-related logic into the parent component? Is it a good idea?
     [Parameter]
@@ -27,7 +31,7 @@
 
     public string Body { get; set; }
 
-    public int AttemptsLeft { get; set; }
+    public int AttemptsLeft { get; set; } = 1;
 
     [Parameter]
     public string Answer { get; set; }
@@ -50,8 +54,7 @@
         var context = DbFactory.CreateDbContext();
 
         var lastAttempt = await context.Attempt.Where(
-            a => a.ContentID == ContentID && a.UserID == UserID)
-            ?.MaxAsync(a => a.AttemptNumber);
+            a => a.ModuleID == ModuleID && a.StepNumber == StepNumber && a.UserID == UserID).ToListAsync();
 
         Console.WriteLine("OnInitializedAsync");
     }
