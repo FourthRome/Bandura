@@ -7,8 +7,9 @@
 
 @inject IDbContextFactory<BlazorImpContext> DbFactory
 @inject NavigationManager NavManager
+
 <!-- TODO: the following is a REALLY bad idea... -->
-@if (Session == null)
+@if (Content == null)
 {
     <p>Введите номер участника:</p>
 
@@ -18,17 +19,17 @@
 }
 else if (Content.Type == "information")
 {
-    <Information Content=Content></Information>
+    <Information ContentJson="@Content.ContentJson"></Information>
     <button @onclick=LoadNextStep>Продолжить</button>
 }
 else if (Content.Type == "question")
 {
-    <Question Content=Content></Question>
+    <Question ContentJson="@Content.ContentJson"></Question>
     <button @onclick=LoadNextStep>Продолжить</button>
 }
 else if (Content.Type == "tutorial")
 {
-    <Tutorial Content=Content></Tutorial>
+    <Tutorial ContentJson="@Content.ContentJson"></Tutorial>
     <button @onclick=LoadNextStep>Продолжить</button>
 }
 

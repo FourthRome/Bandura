@@ -9,7 +9,7 @@
 
 @code {
     [Parameter]
-    public Content Content { get; set; }
+    public string ContentJson { get; set; }
 
     private string Header { get; set; }
 
@@ -17,7 +17,7 @@
 
     protected override void OnParametersSet()
     {
-        Dictionary<string, string> content = JsonConvert.DeserializeObject<Dictionary<string, string>>(Content.ContentJson);
+        Dictionary<string, string> content = JsonConvert.DeserializeObject<Dictionary<string, string>>(ContentJson);
         Header = content["Header"];
         Body = content["Body"];
     }

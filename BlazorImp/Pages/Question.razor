@@ -14,7 +14,10 @@
 
 @code {
     [Parameter]
-    public Content Content { get; set; }
+    public string ContentJson { get; set; }
+
+    [Parameter]
+    public int ContentID { get; set; }
 
     // TODO: can I abstract all db-related logic into the parent component? Is it a good idea?
     [Parameter]
@@ -32,7 +35,7 @@
 
     protected override void OnParametersSet()
     {
-        Dictionary<string, string> content = JsonConvert.DeserializeObject<Dictionary<string, string>>(Content.ContentJson);
+        Dictionary<string, string> content = JsonConvert.DeserializeObject<Dictionary<string, string>>(ContentJson);
         Header = content["Header"];
         Body = content["Body"];
     }
@@ -47,7 +50,9 @@
         var context = DbFactory.CreateDbContext();
 
         var lastAttempt = await context.Attempt.Where(
-            a => a.ContentID == Content.ContentID && a.UserID == UserID)
+            a => a.ContentID == ContentID && a.UserID == UserID)
             ?.MaxAsync(a => a.AttemptNumber);
+
+        Console.WriteLine("OnInitializedAsync");
     }
 }
