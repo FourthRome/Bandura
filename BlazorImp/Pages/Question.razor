@@ -31,7 +31,7 @@
 
     public string Body { get; set; }
 
-    public int AttemptsLeft { get; set; } = 1;
+    public int AttemptsLeft { get; set; }
 
     [Parameter]
     public string Answer { get; set; }
@@ -39,9 +39,32 @@
 
     protected override void OnParametersSet()
     {
+        // TODO: Ok, now THIS does CERTAINLY not belong here
+        // Find a proper way to refactor
+        //-------------
+        Dictionary<string, int> NumberOfAttempts = new()
+        {
+            { "train", 3 },
+            { "test", 1 },
+            { "limitless", 100 },
+        };
+        //-------------
         Dictionary<string, string> content = JsonConvert.DeserializeObject<Dictionary<string, string>>(ContentJson);
         Header = content["Header"];
         Body = content["Body"];
+        AttemptsLeft = NumberOfAttempts[content["Type"]];
+
+        var context = DbFactory.CreateDbContext();
+
+        var lastAttempt = context.Attempt
+            .Where(a => a.ModuleID == ModuleID && a.StepNumber == StepNumber && a.UserID == UserID)
+            .OrderByDescending(a => a.AttemptNumber)
+            .FirstOrDefault();
+
+        if (lastAttempt != null)
+        {
+            AttemptsLeft -= lastAttempt.AttemptNumber;
+        }
     }
 
     public void SendAnswer()
@@ -51,10 +74,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var context = DbFactory.CreateDbContext();
 
-        var lastAttempt = await context.Attempt.Where(
-            a => a.ModuleID == ModuleID && a.StepNumber == StepNumber && a.UserID == UserID).ToListAsync();
 
         Console.WriteLine("OnInitializedAsync");
     }
