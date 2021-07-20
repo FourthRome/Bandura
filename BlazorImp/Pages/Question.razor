@@ -1,20 +1,26 @@
 ﻿@using Newtonsoft.Json
 @using Microsoft.EntityFrameworkCore
+@using Microsoft.Extensions.Logging 
+@using System.ComponentModel.DataAnnotations 
 @using BlazorImp.Data
 @using BlazorImp.Models
 @using BlazorImp.CustomComponents
 
 @inject IDbContextFactory<BlazorImpContext> DbFactory
+@inject ILogger<Question> Logger
 
 <QuestionComponent Header="@Header" Body="@Body" />
 
-<input placeholder="Напишите решение здесь" />
-<button @onclick="SendAnswer" disabled="@(AttemptsLeft <= 0)">Ответить</button>
+<input placeholder="Напишите решение здесь" @bind="@UserAnswer"/>
+<button @onclick="SendAnswer" disabled="@(AttemptsLeft <= 0 || Correct)">Ответить</button>
 <p>@($"Осталось попыток: {AttemptsLeft}")</p>
 
 @code {
+
     [Parameter]
     public string ContentJson { get; set; }
+
+    public string UserAnswer { get; set; }
 
     // TODO: remove this leak of internal databases' structure
     [Parameter]
@@ -33,8 +39,12 @@
 
     public int AttemptsLeft { get; set; }
 
+    public int AttemptNumber { get; set; }
+
+    public string RightAnswer { get; set; }
+
     [Parameter]
-    public string Answer { get; set; }
+    public bool Correct { get; set; }
 
 
     protected override void OnParametersSet()
@@ -53,6 +63,7 @@
         Header = content["Header"];
         Body = content["Body"];
         AttemptsLeft = NumberOfAttempts[content["Type"]];
+        RightAnswer = content["RightAnswer"]; // TODO: Terrible design, refactor ASAP
 
         var context = DbFactory.CreateDbContext();
 
@@ -63,13 +74,43 @@
 
         if (lastAttempt != null)
         {
-            AttemptsLeft -= lastAttempt.AttemptNumber;
+            AttemptNumber = lastAttempt.AttemptNumber;
+            AttemptsLeft -= AttemptNumber;
+            UserAnswer = lastAttempt.UserAnswer;
+            Correct = lastAttempt.Correct;
+        }
+        else
+        {
+            AttemptNumber = 1;
+            UserAnswer = "";
+            Correct = false;
         }
     }
 
-    public void SendAnswer()
+    public async Task SendAnswer()
     {
+        var context = DbFactory.CreateDbContext();
+        ValidateCorrectness();
+
+        Attempt attempt = new()
+        {
+            ModuleID = ModuleID,
+            StepNumber = StepNumber,
+            UserID = UserID,
+            AttemptNumber = AttemptNumber,
+            UserAnswer = UserAnswer,
+            Correct = Correct
+        };
+        context.Attempt.Add(attempt);
+        await context.SaveChangesAsync();
+        AttemptNumber += 1;
         AttemptsLeft -= 1;
+    }
+
+    public void ValidateCorrectness()
+    {
+        // TODO: Refactor this ASAP
+        Correct = UserAnswer == RightAnswer;
     }
 
     protected override async Task OnInitializedAsync()

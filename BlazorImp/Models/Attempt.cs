@@ -19,6 +19,6 @@ namespace BlazorImp.Models
 
         public string UserAnswer { get; set; }
 
-        public int Correct { get; set; }
+        public bool Correct { get; set; }
     }
 }
