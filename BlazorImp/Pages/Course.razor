@@ -1,0 +1,44 @@
+﻿@if (CourseID != null)
+{
+    @switch (CurrentPageType)
+    {
+        case PageType.InfoPage:
+            <BlazorImp.Pages.MinimalSequence.InfoPage/>
+            break;
+        case PageType.SurveyPage:
+            <BlazorImp.Pages.MinimalSequence.SurveyPage/>
+            break;
+        case PageType.VideoPage:
+            <BlazorImp.Pages.MinimalSequence.VideoPage/>
+            break;
+        case PageType.TaskPage:
+            <BlazorImp.Pages.MinimalSequence.TaskPage/>
+            break;
+        case PageType.FinalPage:
+            <BlazorImp.Pages.MinimalSequence.FinalPage/>
+            break;
+        default:
+            <p>PageType is not specified</p>
+            break;
+    }
+}
+
+
+@code {
+    [Parameter]
+    public int? CourseID { get; set; }
+
+    // TODO: I don't like this state machine approach, find a better way to
+    // render the needed component
+    public enum PageType
+    {
+        None,
+        InfoPage,
+        SurveyPage,
+        VideoPage,
+        TaskPage,
+        FinalPage
+    }
+
+    public PageType CurrentPageType { get; set; } = PageType.None;
+}
