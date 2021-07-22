@@ -5,20 +5,14 @@ using System.Threading.Tasks;
 
 namespace BlazorImp.Models
 {
-    public class Attempt
+    public class TaskAttempt
     {
-        public int AttemptID { get; set; }
-
-        public int ModuleID { get; set; }
-
-        public int StepNumber { get; set; }
-
+        public int TaskAttemptID { get; set; }
         public int UserID { get; set; }
-
+        public int CourseID { get; set; }
+        public int TaskPageID { get; set; }
         public int AttemptNumber { get; set; }
-
-        public string UserAnswer { get; set; }
-
+        public string Answer { get; set; }
         public bool Correct { get; set; }
     }
 }

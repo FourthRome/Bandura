@@ -1,0 +1,63 @@
+﻿body {
+}
+
+.main-container {
+    margin: 10px 30%;
+    padding-top: 20px;
+    text-align: center;
+    align-content: center;
+}
+
+    .main-container > * {
+        margin-bottom: 30px;
+    }
+
+label, input {
+    display: block;
+    margin: auto;
+}
+
+.vertical-label {
+    margin-bottom: 5px;
+}
+
+button {
+    background-color: forestgreen;
+    color: white;
+    padding: 10px 20px;
+    border-radius: px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border: 2px solid white;
+}
+
+    button:active {
+        outline: none;
+        background-color: white;
+        color: forestgreen;
+        border: 2px solid forestgreen;
+    }
+
+/* Thanks to https://stackoverflow.com/users/2534840/orangutan for the wonderful snippet
+located here: https://stackoverflow.com/a/60228328 */
+.youtube-container {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 */
+    padding-top: 25px;
+    width: 300%; /* Make it wider than the browser */
+    left: -100%; /* And then center */
+}
+
+    .youtube-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+.youtube-wrapper {
+    overflow: hidden;
+    max-width: 100%;
+    width: 560px;
+}

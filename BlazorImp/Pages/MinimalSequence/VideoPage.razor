@@ -1,0 +1,47 @@
+﻿@page "/VideoPage"
+<div class="main-container">
+    <h2>@Header</h2>
+
+    <!-- TODO: switch to server-hosted videos -->
+    <!-- Thanks to https://stackoverflow.com/users/2534840/orangutan for the wonderful snippet
+     located here: https://stackoverflow.com/a/60228328 -->
+    <div>
+        <!--class="youtube-wrapper"-->
+        <div>
+            <!--class="youtube-container"-->
+            <iframe width="560"
+                    height="315"
+                    src="@(VideoURI + PlayerOptions)"
+                    title="YouTube video player"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    controls=0
+                    allowfullscreen>
+            </iframe>
+        </div>
+    </div>
+
+    <p>@MainText</p>
+
+    <button type="button">Continue</button>
+</div>
+
+
+@code {
+    //--------------------------------------------
+    // Properties that map to UI elements directly
+    //--------------------------------------------
+    [Parameter]
+    public string Header { get; set; } = "Video page";
+
+    [Parameter]
+    public string MainText { get; set; } = "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.";
+
+    //-------------------------------------
+    // Properties that are related to logic
+    //-------------------------------------
+
+    public string VideoURI { get; set; } = "https://www.youtube.com/embed/dQw4w9WgXcQ";
+
+    private string PlayerOptions { get; set; } = "?disablekb=1&iv_load_policy=3&modestbranding=1";
+}

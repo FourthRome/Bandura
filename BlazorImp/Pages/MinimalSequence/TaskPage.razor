@@ -1,0 +1,54 @@
+﻿@page "/TaskPage"
+<div class="main-container">
+    <h2>@Header</h2>
+
+    <p>@TaskText</p>
+
+    @if (ShowAttemptCount)
+    {
+        <p style="color:red;">Wrong answer; attempts left: @AnswerAttemptsLeft</p>
+    }
+
+    <input type="text" id="answer" name="answer" @bind="@UserAnswer">
+
+    @if (ProceedButtonEnabled)
+    {
+        <button type="button">Continue</button>
+    }
+    else
+    {
+        <button type="button">Send answer</button>
+    }
+</div>
+
+@code {
+    //--------------------------------------------
+    // Properties that map to UI elements directly
+    //--------------------------------------------
+    [Parameter]
+    public string Header { get; set; } = "Task page";
+
+    [Parameter]
+    public string TaskText { get; set; } = "What is the answer?";
+
+    [Parameter]
+    public string UserAnswer { get; set; }
+
+    //-------------------------------------
+    // Properties that affect UI implicitly
+    //-------------------------------------
+
+    private int AnswerAttemptsLeft { get; set; }
+
+    private bool ShowAttemptCount { get; set; } = false;
+
+    private bool ProceedButtonEnabled { get; set; } = false;
+
+    //-------------------------------------
+    // Properties that are related to logic
+    //-------------------------------------
+
+    private bool AnswerCorrectness { get; set; }
+
+
+}
