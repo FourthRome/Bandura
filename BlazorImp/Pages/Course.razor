@@ -1,4 +1,5 @@
 ﻿@using Microsoft.EntityFrameworkCore
+@using BlazorImp.Models
 @inject IDbContextFactory<BlazorImpContext> DbFactory
 
 @if (CourseID != null)
@@ -30,30 +31,22 @@
 @code {
     [Parameter]
     public int? CourseID { get; set; }
-
-    // TODO: I don't like this state machine approach, find a better way to
-    // render the needed component
-    public enum PageType
-    {
-        None,
-        InfoPage,
-        SurveyPage,
-        VideoPage,
-        TaskPage,
-        FinalPage
-    }
-
-    public PageType CurrentPageType { get; set; } = PageType.None;
-
     [Parameter]
     public int StepNumber { get; set; } = 0;
 
+    // TODO: I don't like this state machine approach, find a better way to
+    // render the needed component
+    private PageType CurrentPageType { get; set; } = PageType.None;
+    private InfoPageModel? InfoPage { get; set; }
+    private SurveyPageModel? SurveyPage { get; set; }
+    private VideoPageModel? VideoPage { get; set; }
+    private TaskPageModel? TaskPage { get; set; }
+    private FinalPageModel? FinalPage { get; set; }
     public int? UserID { get; set; }
 
     public async Task OnParametersSetAsync()
     {
         using var context = DbFactory.CreateDbContext();
-
     }
 
     public async Task LoadCurrentStep()
@@ -67,7 +60,33 @@
 
         if (page != null)
         {
+            CurrentPageType = page.PageType;
 
+            switch(CurrentPageType)
+            {
+                case PageType.InfoPage:
+                    InfoPage = await context.InfoPageModels.Where(
+                        m => m.InfoPageModelID == page.InfoPageModelID).FirstAsync();
+                    break;
+                case PageType.SurveyPage:
+                    SurveyPage = await context.SurveyPageModels.Where(
+                        m => m.SurveyPageModelID == page.SurveyPageModelID).FirstAsync();
+                    break;
+                case PageType.VideoPage:
+                    VideoPage = await context.VideoPageModels.Where(
+                        m => m.VideoPageModelID == page.VideoPageModelID).FirstAsync();
+                    break;
+                case PageType.TaskPage:
+                    TaskPage = await context.TaskPageModels.Where(
+                        m => m.TaskPageModelID == page.TaskPageModelID).FirstAsync();
+                    break;
+                case PageType.FinalPage:
+                    FinalPage = await context.FinalPageModels.Where(
+                        m => m.FinalPageModelID == page.FinalPageModelID).FirstAsync();
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

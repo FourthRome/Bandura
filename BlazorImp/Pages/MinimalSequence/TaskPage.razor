@@ -1,4 +1,6 @@
 ﻿@page "/TaskPage"
+@using BlazorImp.Models
+
 <div class="main-container">
     <h2>@Header</h2>
 
@@ -25,30 +27,21 @@
     //--------------------------------------------
     // Properties that map to UI elements directly
     //--------------------------------------------
-    [Parameter]
-    public string Header { get; set; } = "Task page";
-
-    [Parameter]
-    public string TaskText { get; set; } = "What is the answer?";
-
-    [Parameter]
-    public string UserAnswer { get; set; }
+    private string Header { get; set; } = "Task page";
+    private string TaskText { get; set; } = "What is the answer?";
+    private string UserAnswer { get; set; }
 
     //-------------------------------------
     // Properties that affect UI implicitly
     //-------------------------------------
-
     private int AnswerAttemptsLeft { get; set; }
-
     private bool ShowAttemptCount { get; set; } = false;
-
     private bool ProceedButtonEnabled { get; set; } = false;
 
     //-------------------------------------
     // Properties that are related to logic
     //-------------------------------------
-
+    [Parameter]
+    public TaskPageModel Model { get; set; }
     private bool AnswerCorrectness { get; set; }
-
-
 }
