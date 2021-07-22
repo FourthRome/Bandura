@@ -10,6 +10,7 @@ namespace BlazorImp.Models
         public int PageID { get; set; }
         public int CourseID { get; set; }
         public int StepNumber { get; set; }
+        public string PageType { get; set; }
         public int FinalPageModelID { get; set; }
         public int InfoPageModelID { get; set; }
         public int SurveyPageModelID { get; set; }

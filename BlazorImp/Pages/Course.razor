@@ -1,4 +1,7 @@
-﻿@if (CourseID != null)
+﻿@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<BlazorImpContext> DbFactory
+
+@if (CourseID != null)
 {
     @switch (CurrentPageType)
     {
@@ -41,4 +44,30 @@
     }
 
     public PageType CurrentPageType { get; set; } = PageType.None;
+
+    [Parameter]
+    public int StepNumber { get; set; } = 0;
+
+    public int? UserID { get; set; }
+
+    public async Task OnParametersSetAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+
+    }
+
+    public async Task LoadCurrentStep()
+    {
+        using var context = DbFactory.CreateDbContext();
+
+        var page = await context.Pages.Where(
+            p =>
+            p.CourseID == CourseID &&
+            p.StepNumber == StepNumber).FirstAsync();
+
+        if (page != null)
+        {
+
+        }
+    }
 }
