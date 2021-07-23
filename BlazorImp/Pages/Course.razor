@@ -7,19 +7,19 @@
     @switch (CurrentPageType)
     {
         case PageType.InfoPage:
-            <BlazorImp.Pages.MinimalSequence.InfoPage/>
+            <BlazorImp.Pages.MinimalSequence.InfoPage Model=@InfoPage GoToNextStep=@GoToNextStep/>
             break;
         case PageType.SurveyPage:
-            <BlazorImp.Pages.MinimalSequence.SurveyPage/>
+            <BlazorImp.Pages.MinimalSequence.SurveyPage  Model=@SurveyPage GoToNextStep=@GoToNextStep/>
             break;
         case PageType.VideoPage:
-            <BlazorImp.Pages.MinimalSequence.VideoPage/>
+            <BlazorImp.Pages.MinimalSequence.VideoPage Model=@VideoPage GoToNextStep=@GoToNextStep/>
             break;
         case PageType.TaskPage:
-            <BlazorImp.Pages.MinimalSequence.TaskPage/>
+            <BlazorImp.Pages.MinimalSequence.TaskPage Model=@TaskPage GoToNextStep=@GoToNextStep/>
             break;
         case PageType.FinalPage:
-            <BlazorImp.Pages.MinimalSequence.FinalPage/>
+            <BlazorImp.Pages.MinimalSequence.FinalPage Model=@FinalPage/>
             break;
         default:
             <p>PageType is not specified</p>
@@ -31,11 +31,9 @@
 @code {
     [Parameter]
     public int? CourseID { get; set; }
-    [Parameter]
-    public int StepNumber { get; set; } = 0;
 
     // TODO: I don't like this state machine approach, find a better way to
-    // render the needed component
+    // render the required component
     private PageType CurrentPageType { get; set; } = PageType.None;
     private InfoPageModel? InfoPage { get; set; }
     private SurveyPageModel? SurveyPage { get; set; }
@@ -43,20 +41,21 @@
     private TaskPageModel? TaskPage { get; set; }
     private FinalPageModel? FinalPage { get; set; }
     public int? UserID { get; set; }
+    public int StepNumber { get; set; } = 0;
 
-    public async Task OnParametersSetAsync()
+    protected override async Task OnParametersSetAsync()
     {
-        using var context = DbFactory.CreateDbContext();
+        await LoadCurrentStep();
     }
 
-    public async Task LoadCurrentStep()
+    protected async Task LoadCurrentStep()
     {
         using var context = DbFactory.CreateDbContext();
 
         var page = await context.Pages.Where(
             p =>
             p.CourseID == CourseID &&
-            p.StepNumber == StepNumber).FirstAsync();
+            p.StepNumber == StepNumber).FirstOrDefaultAsync();
 
         if (page != null)
         {
@@ -66,27 +65,33 @@
             {
                 case PageType.InfoPage:
                     InfoPage = await context.InfoPageModels.Where(
-                        m => m.InfoPageModelID == page.InfoPageModelID).FirstAsync();
+                        m => m.InfoPageModelID == page.InfoPageModelID).FirstOrDefaultAsync();
                     break;
                 case PageType.SurveyPage:
                     SurveyPage = await context.SurveyPageModels.Where(
-                        m => m.SurveyPageModelID == page.SurveyPageModelID).FirstAsync();
+                        m => m.SurveyPageModelID == page.SurveyPageModelID).FirstOrDefaultAsync();
                     break;
                 case PageType.VideoPage:
                     VideoPage = await context.VideoPageModels.Where(
-                        m => m.VideoPageModelID == page.VideoPageModelID).FirstAsync();
+                        m => m.VideoPageModelID == page.VideoPageModelID).FirstOrDefaultAsync();
                     break;
                 case PageType.TaskPage:
                     TaskPage = await context.TaskPageModels.Where(
-                        m => m.TaskPageModelID == page.TaskPageModelID).FirstAsync();
+                        m => m.TaskPageModelID == page.TaskPageModelID).FirstOrDefaultAsync();
                     break;
                 case PageType.FinalPage:
                     FinalPage = await context.FinalPageModels.Where(
-                        m => m.FinalPageModelID == page.FinalPageModelID).FirstAsync();
+                        m => m.FinalPageModelID == page.FinalPageModelID).FirstOrDefaultAsync();
                     break;
                 default:
                     break;
             }
         }
+    }
+
+    public async Task GoToNextStep()
+    {
+        StepNumber += 1;
+        await LoadCurrentStep();
     }
 }

@@ -15,11 +15,11 @@
 
     @if (ProceedButtonEnabled)
     {
-        <button type="button">Continue</button>
+        <button type="button" @onclick="ButtonOnClick">Continue</button>
     }
     else
     {
-        <button type="button">Send answer</button>
+        <button type="button" @onclick="ButtonOnClick">Send answer</button>
     }
 </div>
 
@@ -43,5 +43,12 @@
     //-------------------------------------
     [Parameter]
     public TaskPageModel Model { get; set; }
+    [Parameter]
+    public EventCallback<Task> GoToNextStep { get; set; }
     private bool AnswerCorrectness { get; set; }
+
+    private async Task ButtonOnClick()
+    {
+        await GoToNextStep.InvokeAsync();
+    }
 }

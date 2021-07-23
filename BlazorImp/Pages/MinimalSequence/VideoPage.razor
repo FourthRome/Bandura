@@ -25,7 +25,7 @@
 
     <p>@MainText</p>
 
-    <button type="button">Continue</button>
+    <button type="button" @onclick="ButtonOnClick">Continue</button>
 </div>
 
 
@@ -41,6 +41,13 @@
     //-------------------------------------
     [Parameter]
     public VideoPageModel Model { get; set; }
+    [Parameter]
+    public EventCallback<Task> GoToNextStep { get; set; }
     private string VideoURI { get; set; } = "https://www.youtube.com/embed/dQw4w9WgXcQ";
     private string PlayerOptions { get; set; } = "?disablekb=1&iv_load_policy=3&modestbranding=1";
+
+    private async Task ButtonOnClick()
+    {
+        await GoToNextStep.InvokeAsync();
+    }
 }

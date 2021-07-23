@@ -8,7 +8,7 @@
 
     <label class="vertical-label" for="answer">Question text</label>
     <input type="text" id="answer" name="answer" @bind="@UserAnswer">
-    <button type="button">Continue</button>
+    <button type="button" @onclick="ButtonOnClick">Continue</button>
 </div>
 @code {
     //--------------------------------------------
@@ -24,4 +24,11 @@
     //-------------------------------------
     [Parameter]
     public SurveyPageModel Model { get; set; }
+    [Parameter]
+    public EventCallback<Task> GoToNextStep { get; set; }
+
+    private async Task ButtonOnClick()
+    {
+        await GoToNextStep.InvokeAsync();
+    }
 }

@@ -6,7 +6,7 @@
 
     <p>@MainText</p>
 
-    <button type="button">Continue</button>
+    <button type="button" @onclick="ButtonOnClick">Continue</button>
 </div>
 
 @code {
@@ -21,4 +21,11 @@
     //-------------------------------------
     [Parameter]
     public InfoPageModel Model { get; set; }
+    [Parameter]
+    public EventCallback<Task> GoToNextStep { get; set; }
+
+    private async Task ButtonOnClick()
+    {
+        await GoToNextStep.InvokeAsync();
+    }
 }
