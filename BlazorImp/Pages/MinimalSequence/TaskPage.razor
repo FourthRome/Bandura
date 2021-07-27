@@ -1,5 +1,8 @@
 ﻿@page "/TaskPage"
+@using Microsoft.EntityFrameworkCore
 @using BlazorImp.Models
+@inject IDbContextFactory<BlazorImpContext> DbFactory
+
 
 <div class="main-container">
     <h2>@Header</h2>
@@ -11,15 +14,15 @@
         <p style="color:red;">Wrong answer; attempts left: @AnswerAttemptsLeft</p>
     }
 
-    <input type="text" id="answer" name="answer" @bind="@UserAnswer">
+    <input type="text" id="answer" name="answer" @bind=UserAnswer>
 
     @if (ProceedButtonEnabled)
     {
-        <button type="button" @onclick="ButtonOnClick">Continue</button>
+        <button type="button" @onclick=ButtonOnClick>Continue</button>
     }
     else
     {
-        <button type="button" @onclick="ButtonOnClick">Send answer</button>
+        <button type="button" @onclick=SendAnswer>Send answer</button>
     }
 </div>
 
@@ -34,7 +37,7 @@
     //-------------------------------------
     // Properties that affect UI implicitly
     //-------------------------------------
-    private int AnswerAttemptsLeft { get; set; }
+    private int AnswerAttemptsLeft { get; set; } = 3;
     private bool ShowAttemptCount { get; set; } = false;
     private bool ProceedButtonEnabled { get; set; } = false;
 
@@ -47,7 +50,47 @@
     public SessionInfo SessionInfo { get; set; }
     [Parameter]
     public EventCallback<Task> GoToNextStep { get; set; }
+    private int AttemptNumber { get; set; } = 1;
     private bool AnswerCorrectness { get; set; }
+
+    private async Task SendAnswer()
+    {
+        if (AnswerAttemptsLeft <= 0)
+        {
+            return;
+        }
+
+        var context = DbFactory.CreateDbContext();
+
+        if (!SessionInfo.UserID.HasValue)
+        {
+            throw new ArgumentException("UserID if empty on form submission");
+        }
+
+        // TODO: Find a way to make the cast explicitly throwing exception
+        // as null UserID should never appear here, but is checked
+        // in the code above instead of here
+        TaskAttempt attempt = new TaskAttempt()
+        {
+            CourseID = SessionInfo.CourseID,
+            TaskPageModelID = Model.TaskPageModelID,
+            AttemptNumber = AttemptNumber,
+            Answer = UserAnswer,
+            Correct = false,
+            UserID = SessionInfo.UserID ?? SessionInfo.UserID.GetValueOrDefault(),
+        };
+
+        context.TaskAttempts.Add(attempt);
+        await context.SaveChangesAsync();
+
+        AttemptNumber += 1;
+        AnswerAttemptsLeft -= 1;
+
+        if (AnswerAttemptsLeft <= 0)
+        {
+            ProceedButtonEnabled = true;
+        }
+    }
 
     private async Task ButtonOnClick()
     {

@@ -9,7 +9,7 @@ namespace BlazorImp.Models
     // But it still looks like it's needed
     public class SessionInfo
     {
-        public int? CourseID { get; set; }
+        public int CourseID { get; set; }
         public int? UserID { get; set; }
         public int StepNumber { get; set; }
     }

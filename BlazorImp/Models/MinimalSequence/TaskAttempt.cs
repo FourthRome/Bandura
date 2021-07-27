@@ -10,7 +10,7 @@ namespace BlazorImp.Models
         public int TaskAttemptID { get; set; }
         public int UserID { get; set; }
         public int CourseID { get; set; }
-        public int TaskPageID { get; set; }
+        public int TaskPageModelID { get; set; }
         public int AttemptNumber { get; set; }
         public string Answer { get; set; }
         public bool Correct { get; set; }
