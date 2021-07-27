@@ -44,6 +44,8 @@
     [Parameter]
     public TaskPageModel Model { get; set; }
     [Parameter]
+    public SessionInfo SessionInfo { get; set; }
+    [Parameter]
     public EventCallback<Task> GoToNextStep { get; set; }
     private bool AnswerCorrectness { get; set; }
 

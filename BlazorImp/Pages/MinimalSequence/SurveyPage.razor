@@ -25,10 +25,17 @@
     [Parameter]
     public SurveyPageModel Model { get; set; }
     [Parameter]
+    public SessionInfo SessionInfo { get; set; }
+    [Parameter]
     public EventCallback<Task> GoToNextStep { get; set; }
 
     private async Task ButtonOnClick()
     {
+        // TODO: Replace this dirty hack with something more safe and manageable
+        if (SessionInfo.StepNumber == 0)
+        {
+            SessionInfo.UserID = Convert.ToInt32(UserAnswer);
+        }
         await GoToNextStep.InvokeAsync();
     }
 }

@@ -7,19 +7,19 @@
     @switch (CurrentPageType)
     {
         case PageType.InfoPage:
-            <BlazorImp.Pages.MinimalSequence.InfoPage Model=@InfoPage GoToNextStep=@GoToNextStep/>
+            <BlazorImp.Pages.MinimalSequence.InfoPage Model=@InfoPage GoToNextStep=@GoToNextStep SessionInfo=@SessionInfo/>
             break;
         case PageType.SurveyPage:
-            <BlazorImp.Pages.MinimalSequence.SurveyPage  Model=@SurveyPage GoToNextStep=@GoToNextStep/>
+            <BlazorImp.Pages.MinimalSequence.SurveyPage Model=@SurveyPage GoToNextStep=@GoToNextStep SessionInfo=@SessionInfo/>
             break;
         case PageType.VideoPage:
-            <BlazorImp.Pages.MinimalSequence.VideoPage Model=@VideoPage GoToNextStep=@GoToNextStep/>
+            <BlazorImp.Pages.MinimalSequence.VideoPage Model=@VideoPage GoToNextStep=@GoToNextStep SessionInfo=@SessionInfo/>
             break;
         case PageType.TaskPage:
-            <BlazorImp.Pages.MinimalSequence.TaskPage Model=@TaskPage GoToNextStep=@GoToNextStep/>
+            <BlazorImp.Pages.MinimalSequence.TaskPage Model=@TaskPage GoToNextStep=@GoToNextStep SessionInfo=@SessionInfo/>
             break;
         case PageType.FinalPage:
-            <BlazorImp.Pages.MinimalSequence.FinalPage Model=@FinalPage/>
+            <BlazorImp.Pages.MinimalSequence.FinalPage Model=@FinalPage SessionInfo=@SessionInfo/>
             break;
         default:
             <p>PageType is not specified</p>
@@ -42,9 +42,19 @@
     private FinalPageModel? FinalPage { get; set; }
     public int? UserID { get; set; }
     public int StepNumber { get; set; } = 0;
+    public SessionInfo SessionInfo { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        SessionInfo = new();
+        StepNumber = 0;
+    }
 
     protected override async Task OnParametersSetAsync()
     {
+        SessionInfo.CourseID = CourseID;
+        SessionInfo.UserID = UserID;
+        SessionInfo.StepNumber = StepNumber;
         await LoadCurrentStep();
     }
 
@@ -92,6 +102,7 @@
     public async Task GoToNextStep()
     {
         StepNumber += 1;
+        SessionInfo.StepNumber = StepNumber;
         await LoadCurrentStep();
     }
 }
