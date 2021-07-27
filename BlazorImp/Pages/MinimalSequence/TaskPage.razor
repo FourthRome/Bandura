@@ -67,6 +67,9 @@
             throw new ArgumentException("UserID if empty on form submission");
         }
 
+        // TODO: Eliminate potential race condition (what if the database has changed?)
+        AnswerCorrectness = Model.RightAnswer == UserAnswer;
+
         // TODO: Find a way to make the cast explicitly throwing exception
         // as null UserID should never appear here, but is checked
         // in the code above instead of here
@@ -76,7 +79,7 @@
             TaskPageModelID = Model.TaskPageModelID,
             AttemptNumber = AttemptNumber,
             Answer = UserAnswer,
-            Correct = false,
+            Correct = AnswerCorrectness,
             UserID = SessionInfo.UserID ?? SessionInfo.UserID.GetValueOrDefault(),
         };
 
@@ -86,9 +89,13 @@
         AttemptNumber += 1;
         AnswerAttemptsLeft -= 1;
 
-        if (AnswerAttemptsLeft <= 0)
+        if (AnswerCorrectness || AnswerAttemptsLeft <= 0)
         {
             ProceedButtonEnabled = true;
+        }
+        if (!AnswerCorrectness)
+        {
+            ShowAttemptCount = true;
         }
     }
 
