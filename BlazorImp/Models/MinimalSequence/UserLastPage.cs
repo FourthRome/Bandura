@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace BlazorImp.Models
 {
-    public class LastUserPage
+    public class UserLastPage
     {
-        public int LastUserPageID { get; set; }
+        public int UserLastPageID { get; set; }
         public int UserID { get; set; }
         public int CourseID { get; set; }
         public int StepNumber { get; set; }

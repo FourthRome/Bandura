@@ -18,7 +18,7 @@ namespace BlazorImp.Data
         public DbSet<Course> Courses { get; set; }
         public DbSet<Page> Pages { get; set; }
         public DbSet<User> Users { get; set; }
-        public DbSet<LastUserPage> UserLastPages { get; set; }
+        public DbSet<UserLastPage> UserLastPages { get; set; }
         public DbSet<SurveyAnswer> SurveyAnswers { get; set; }
         public DbSet<TaskAttempt> TaskAttempts { get; set; }
         public DbSet<SurveyPageModel> SurveyPageModels { get; set; }
@@ -48,7 +48,7 @@ namespace BlazorImp.Data
             modelBuilder.Entity<Course>().ToTable("Courses");
             modelBuilder.Entity<Page>().ToTable("Pages");
             modelBuilder.Entity<User>().ToTable("Users");
-            modelBuilder.Entity<LastUserPage>().ToTable("UserLastPages");
+            modelBuilder.Entity<UserLastPage>().ToTable("UserLastPages");
             modelBuilder.Entity<SurveyAnswer>().ToTable("SurveyAnswers");
             modelBuilder.Entity<TaskAttempt>().ToTable("TaskAttempts");
             modelBuilder.Entity<SurveyPageModel>().ToTable("SurveyPageModels");
