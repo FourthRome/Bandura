@@ -99,9 +99,9 @@
         }
     }
 
-    public async Task GoToNextStep()
+    public async Task GoToNextStep(int stepNumber = -1)
     {
-        StepNumber += 1;
+        StepNumber = (stepNumber == -1) ? StepNumber + 1 : stepNumber;
         SessionInfo.StepNumber = StepNumber;
         await LoadCurrentStep();
     }
