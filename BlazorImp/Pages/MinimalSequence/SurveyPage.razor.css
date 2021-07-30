@@ -42,3 +42,8 @@ button {
         background-color: darkgrey;
         color: dimgrey
     }
+
+input:disabled, input[disabled] {
+    background-color: darkgrey;
+    color: dimgrey;
+}

@@ -9,7 +9,7 @@
     <p>@MainText</p>
 
     <label class="vertical-label" for="answer">Question text</label>
-    <input type="text" id="answer" name="answer" @bind="@UserAnswer">
+    <input type="text" id="answer" name="answer" disabled=@SendingData @bind="@UserAnswer">
     <button type="button" disabled=@SendingData @onclick="ButtonOnClick">Continue</button>
 </div>
 @code {

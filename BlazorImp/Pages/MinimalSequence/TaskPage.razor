@@ -9,14 +9,27 @@
 
     <p>@TaskText</p>
 
-    @if (ShowAttemptCount)
+    @if (AnswerCorrectness == false)
     {
-        <p style="color:red;">Wrong answer; attempts left: @AnswerAttemptsLeft</p>
+        if (AnswerAttemptsLeft > 0)
+        {
+            <p style="color:red;">The answer is incorrect; please try again.</p>
+        }
+        else
+        {
+            <p style="color:red;">The answer is incorrect.</p>
+        }
+    }
+    else if (AnswerCorrectness == true)
+    {
+        <p style="color:forestgreen;">That's right!</p>
     }
 
-    <input type="text" disabled=@SendingData id="answer" name="answer" @bind=UserAnswer>
+    <p>Attempts left: @AnswerAttemptsLeft</p>
 
-    @if (AnswerAttemptsLeft <= 0 || AnswerCorrectness)
+    <input type="text" disabled=@(SendingData || AnswerAttemptsLeft <= 0 || AnswerCorrectness == true) id="answer" name="answer" @bind=UserAnswer>
+
+    @if (AnswerAttemptsLeft <= 0 || AnswerCorrectness == true)
     {
         <button type="button" @onclick=ButtonOnClick>Continue</button>
     }
@@ -38,9 +51,8 @@
     // Properties that affect UI implicitly
     //-------------------------------------
     private int AnswerAttemptsLeft { get; set; }
-    private bool ShowAttemptCount { get; set; } = false;
-    private bool SendingData { get; set; } = false;
-    private bool AnswerCorrectness { get; set; }
+    private bool SendingData { get; set; }
+    private bool? AnswerCorrectness { get; set; }
 
     //-------------------------------------
     // Properties that are related to logic
@@ -51,7 +63,7 @@
     public SessionInfo SessionInfo { get; set; }
     [Parameter]
     public EventCallback<Task> GoToNextStep { get; set; }
-    private int AttemptNumber { get; set; } = 1;
+    private int AttemptNumber { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -76,6 +88,12 @@
             AttemptNumber = prevAttempt.AttemptNumber + 1;
             AnswerCorrectness = prevAttempt.Correct;
             UserAnswer = prevAttempt.Answer;
+        }
+        else
+        {
+            AttemptNumber = 1;
+            SendingData = false;
+            AnswerCorrectness = null;
         }
     }
 
@@ -108,7 +126,7 @@
             TaskPageModelID = Model.TaskPageModelID,
             AttemptNumber = AttemptNumber,
             Answer = UserAnswer,
-            Correct = AnswerCorrectness,
+            Correct = AnswerCorrectness ?? false,
             UserID = SessionInfo.UserID.GetValueOrDefault(),
         };
 
@@ -117,11 +135,6 @@
 
         AttemptNumber += 1;
         AnswerAttemptsLeft -= 1;
-
-        if (!AnswerCorrectness)
-        {
-            ShowAttemptCount = true;
-        }
 
         SendingData = false;
 
