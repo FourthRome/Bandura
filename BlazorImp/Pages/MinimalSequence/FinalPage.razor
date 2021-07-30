@@ -21,4 +21,11 @@
     public FinalPageModel Model { get; set; }
     [Parameter]
     public SessionInfo SessionInfo { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        // Map Model's data to UI
+        Header = Model.Header;
+        MainText = Model.MainText;
+    }
 }

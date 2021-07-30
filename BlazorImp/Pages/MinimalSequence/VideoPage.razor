@@ -48,6 +48,14 @@
     private string VideoURI { get; set; } = "https://www.youtube.com/embed/dQw4w9WgXcQ";
     private string PlayerOptions { get; set; } = "?disablekb=1&iv_load_policy=3&modestbranding=1";
 
+    protected override async Task OnParametersSetAsync()
+    {
+        // Map Model's data to UI
+        Header = Model.Header;
+        MainText = Model.MainText;
+        VideoURI = Model.VideoURI;
+    }
+
     private async Task ButtonOnClick()
     {
         await GoToNextStep.InvokeAsync();

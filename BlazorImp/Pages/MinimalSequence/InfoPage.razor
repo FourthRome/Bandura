@@ -26,6 +26,13 @@
     [Parameter]
     public EventCallback<Task> GoToNextStep { get; set; }
 
+    protected override async Task OnParametersSetAsync()
+    {
+        // Map Model's data to UI
+        Header = Model.Header;
+        MainText = Model.MainText;
+    }
+
     private async Task ButtonOnClick()
     {
         await GoToNextStep.InvokeAsync();

@@ -8,7 +8,7 @@
 
     <p>@MainText</p>
 
-    <label class="vertical-label" for="answer">Question text</label>
+    <label class="vertical-label" for="answer">@Question</label>
     <input type="text" id="answer" name="answer" disabled=@SendingData @bind="@UserAnswer">
     <button type="button" disabled=@SendingData @onclick="ButtonOnClick">Continue</button>
 </div>
@@ -35,6 +35,14 @@
     public SessionInfo SessionInfo { get; set; }
     [Parameter]
     public EventCallback<Task> GoToNextStep { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        // Map Model's data to UI
+        Header = Model.Header;
+        MainText = Model.MainText;
+        Question = Model.Question;
+    }
 
     private async Task ButtonOnClick()
     {

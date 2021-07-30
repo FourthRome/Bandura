@@ -67,6 +67,10 @@
 
     protected override async Task OnParametersSetAsync()
     {
+        // Map Model's data to UI
+        Header = Model.Header;
+        TaskText = Model.TaskText;
+
         AnswerAttemptsLeft = Model.AttemptNumberConstraint;
 
         var context = DbFactory.CreateDbContext();
