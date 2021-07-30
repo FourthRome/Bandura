@@ -40,21 +40,21 @@
     private VideoPageModel? VideoPage { get; set; }
     private TaskPageModel? TaskPage { get; set; }
     private FinalPageModel? FinalPage { get; set; }
-    public int? UserID { get; set; }
-    public int StepNumber { get; set; } = 0;
     public SessionInfo SessionInfo { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        SessionInfo = new();
-        StepNumber = 0;
     }
 
     protected override async Task OnParametersSetAsync()
     {
+        // TODO: SessionInfo consists of information shared between
+        // different components, and shared implicitly. This is 
+        // bad design, find a way to share information in a more direct
+        // manner
+        SessionInfo = new();
         SessionInfo.CourseID = CourseID;
-        SessionInfo.UserID = UserID;
-        SessionInfo.StepNumber = StepNumber;
+        SessionInfo.StepNumber = 0;
         await LoadCurrentStep();
     }
 
@@ -65,7 +65,7 @@
         var page = await context.Pages.Where(
             p =>
             p.CourseID == CourseID &&
-            p.StepNumber == StepNumber).FirstOrDefaultAsync();
+            p.StepNumber == SessionInfo.StepNumber).FirstOrDefaultAsync();
 
         if (page != null)
         {
@@ -101,8 +101,20 @@
 
     public async Task GoToNextStep()
     {
-        ++StepNumber;
-        SessionInfo.StepNumber = StepNumber;
+        SessionInfo.StepNumber++;
+
+        var context = DbFactory.CreateDbContext();
+        var page = await context.UserLastPages.Where(
+                p =>
+                p.CourseID == SessionInfo.CourseID &&
+                p.UserID == SessionInfo.UserID).FirstOrDefaultAsync();
+
+        if (page != null && SessionInfo.StepNumber > page.StepNumber)
+        {
+            page.StepNumber = SessionInfo.StepNumber;
+            await context.SaveChangesAsync();
+        }
+
         await LoadCurrentStep();
     }
 }

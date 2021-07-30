@@ -69,6 +69,36 @@
             context.SurveyAnswers.Add(answer);
             await context.SaveChangesAsync();
 
+            // TODO: Replace this code duplication with something clearer
+            if (SessionInfo.StepNumber == 0)
+            {
+                var page = await context.UserLastPages.Where(
+                        p =>
+                        p.CourseID == SessionInfo.CourseID &&
+                        p.UserID == SessionInfo.UserID).FirstOrDefaultAsync();
+
+                if (page != null)
+                {
+                    // TODO: This is extremely terrible code!
+                    // Find a way to pass step number to the 'GoToNextStep' method instead
+                    SessionInfo.StepNumber = page.StepNumber - 1;
+                }
+                else
+                {
+                    // TODO: here we assume that UserID is not null already, which can change later.
+                    // Find a safer way to write this.
+                    UserLastPage lastPage = new()
+                    {
+                        CourseID = SessionInfo.CourseID,
+                        UserID = SessionInfo.UserID.GetValueOrDefault(),
+                        StepNumber = 0,
+                    };
+
+                    context.UserLastPages.Add(lastPage);
+                    await context.SaveChangesAsync();
+                }
+            }
+
             await GoToNextStep.InvokeAsync();
         }
         finally
