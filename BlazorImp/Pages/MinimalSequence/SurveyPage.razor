@@ -10,7 +10,7 @@
 
     <label class="vertical-label" for="answer">Question text</label>
     <input type="text" id="answer" name="answer" @bind="@UserAnswer">
-    <button type="button" @onclick="ButtonOnClick">Continue</button>
+    <button type="button" disabled=@SendingData @onclick="ButtonOnClick">Continue</button>
 </div>
 @code {
     //--------------------------------------------
@@ -20,6 +20,11 @@
     private string MainText { get; set; } = "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.";
     private string Question { get; set; } = "Question text?";
     private string UserAnswer { get; set; }
+
+    //-------------------------------------
+    // Properties that affect UI implicitly
+    //-------------------------------------
+    private bool SendingData { get; set; } = false;
 
     //-------------------------------------
     // Properties that are related to logic
@@ -33,34 +38,42 @@
 
     private async Task ButtonOnClick()
     {
-        // TODO: Replace this dirty hack with something more safe and manageable
-        if (SessionInfo.StepNumber == 0)
+        SendingData = true;
+
+        try
         {
-            SessionInfo.UserID = Convert.ToInt32(UserAnswer);
+            // TODO: Replace this dirty hack with something more safe and manageable
+            if (SessionInfo.StepNumber == 0)
+            {
+                SessionInfo.UserID = Convert.ToInt32(UserAnswer);
+            }
+
+            if (!SessionInfo.UserID.HasValue)
+            {
+                throw new ArgumentException("UserID is empty on form submission");
+            }
+
+            // TODO: Find a way to make the cast explicitly throwing exception
+            // as null UserID should never appear here, but is checked
+            // in the code above instead of here
+
+            SurveyAnswer answer = new()
+            {
+                CourseID = SessionInfo.CourseID,
+                SurveyPageModelID = Model.SurveyPageModelID,
+                UserID = SessionInfo.UserID.GetValueOrDefault(),
+                Answer = UserAnswer,
+            };
+
+            var context = DbFactory.CreateDbContext();
+            context.SurveyAnswers.Add(answer);
+            await context.SaveChangesAsync();
+
+            await GoToNextStep.InvokeAsync();
         }
-
-        if (!SessionInfo.UserID.HasValue)
+        finally
         {
-            throw new ArgumentException("UserID is empty on form submission");
+            SendingData = false;
         }
-
-        // TODO: Find a way to make the cast explicitly throwing exception
-        // as null UserID should never appear here, but is checked
-        // in the code above instead of here
-
-        SurveyAnswer answer = new()
-        {
-            CourseID = SessionInfo.CourseID,
-            SurveyPageModelID = Model.SurveyPageModelID,
-            UserID = SessionInfo.UserID.GetValueOrDefault(),
-            Answer = UserAnswer,
-        };
-
-
-        var context = DbFactory.CreateDbContext();
-        context.SurveyAnswers.Add(answer);
-        await context.SaveChangesAsync();
-
-        await GoToNextStep.InvokeAsync();
     }
 }

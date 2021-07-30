@@ -40,6 +40,7 @@
     private int AnswerAttemptsLeft { get; set; } = 3;
     private bool ShowAttemptCount { get; set; } = false;
     private bool ProceedButtonEnabled { get; set; } = false;
+    private bool SendingData { get; set; } = false;
 
     //-------------------------------------
     // Properties that are related to logic
@@ -52,7 +53,6 @@
     public EventCallback<Task> GoToNextStep { get; set; }
     private int AttemptNumber { get; set; } = 1;
     private bool AnswerCorrectness { get; set; }
-    private bool SendingData { get; set; } = false;
 
     private async Task SendAnswer()
     {
@@ -102,17 +102,13 @@
             {
                 ShowAttemptCount = true;
             }
-
-            await Task.Delay(3000);
         }
         finally
         {
             SendingData = false;
         }
-
-
-
     }
+
 
     private async Task ButtonOnClick()
     {
