@@ -10,7 +10,7 @@ namespace BlazorImp.Models
         public int SurveyAnswerID { get; set; }
         public int UserID { get; set; }
         public int CourseID { get; set; }
-        public int SurveyPageID { get; set; }
+        public int SurveyPageModelID { get; set; }
         public string Answer { get; set; }
     }
 }

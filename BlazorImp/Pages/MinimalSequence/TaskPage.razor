@@ -69,7 +69,7 @@
 
             if (!SessionInfo.UserID.HasValue)
             {
-                throw new ArgumentException("UserID if empty on form submission");
+                throw new ArgumentException("UserID is empty on form submission");
             }
 
             // TODO: Eliminate potential race condition (what if the database has changed?)
@@ -85,7 +85,7 @@
                 AttemptNumber = AttemptNumber,
                 Answer = UserAnswer,
                 Correct = AnswerCorrectness,
-                UserID = SessionInfo.UserID ?? SessionInfo.UserID.GetValueOrDefault(),
+                UserID = SessionInfo.UserID.GetValueOrDefault(),
             };
 
             context.TaskAttempts.Add(attempt);

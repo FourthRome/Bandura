@@ -1,5 +1,7 @@
 ﻿@page "/SurveyPage"
+@using Microsoft.EntityFrameworkCore
 @using BlazorImp.Models
+@inject IDbContextFactory<BlazorImpContext> DbFactory
 
 <div class="main-container">
     <h2>@Header</h2>
@@ -36,6 +38,29 @@
         {
             SessionInfo.UserID = Convert.ToInt32(UserAnswer);
         }
+
+        if (!SessionInfo.UserID.HasValue)
+        {
+            throw new ArgumentException("UserID is empty on form submission");
+        }
+
+        // TODO: Find a way to make the cast explicitly throwing exception
+        // as null UserID should never appear here, but is checked
+        // in the code above instead of here
+
+        SurveyAnswer answer = new()
+        {
+            CourseID = SessionInfo.CourseID,
+            SurveyPageModelID = Model.SurveyPageModelID,
+            UserID = SessionInfo.UserID.GetValueOrDefault(),
+            Answer = UserAnswer,
+        };
+
+
+        var context = DbFactory.CreateDbContext();
+        context.SurveyAnswers.Add(answer);
+        await context.SaveChangesAsync();
+
         await GoToNextStep.InvokeAsync();
     }
 }
