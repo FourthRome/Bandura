@@ -40,70 +40,65 @@
     {
         SendingData = true;
 
-        try
+        // TODO: Replace this dirty hack with something more safe and manageable
+        if (SessionInfo.StepNumber == 0)
         {
-            // TODO: Replace this dirty hack with something more safe and manageable
-            if (SessionInfo.StepNumber == 0)
-            {
-                SessionInfo.UserID = Convert.ToInt32(UserAnswer);
-            }
-
-            if (!SessionInfo.UserID.HasValue)
-            {
-                throw new ArgumentException("UserID is empty on form submission");
-            }
-
-            // TODO: Find a way to make the cast explicitly throwing exception
-            // as null UserID should never appear here, but is checked
-            // in the code above instead of here
-
-            SurveyAnswer answer = new()
-            {
-                CourseID = SessionInfo.CourseID,
-                SurveyPageModelID = Model.SurveyPageModelID,
-                UserID = SessionInfo.UserID.GetValueOrDefault(),
-                Answer = UserAnswer,
-            };
-
-            var context = DbFactory.CreateDbContext();
-            context.SurveyAnswers.Add(answer);
-            await context.SaveChangesAsync();
-
-            // TODO: Replace this code duplication with something clearer
-            if (SessionInfo.StepNumber == 0)
-            {
-                var page = await context.UserLastPages.Where(
-                        p =>
-                        p.CourseID == SessionInfo.CourseID &&
-                        p.UserID == SessionInfo.UserID).FirstOrDefaultAsync();
-
-                if (page != null)
-                {
-                    // TODO: This is extremely terrible code!
-                    // Find a way to pass step number to the 'GoToNextStep' method instead
-                    SessionInfo.StepNumber = page.StepNumber - 1;
-                }
-                else
-                {
-                    // TODO: here we assume that UserID is not null already, which can change later.
-                    // Find a safer way to write this.
-                    UserLastPage lastPage = new()
-                    {
-                        CourseID = SessionInfo.CourseID,
-                        UserID = SessionInfo.UserID.GetValueOrDefault(),
-                        StepNumber = 0,
-                    };
-
-                    context.UserLastPages.Add(lastPage);
-                    await context.SaveChangesAsync();
-                }
-            }
-
-            await GoToNextStep.InvokeAsync();
+            SessionInfo.UserID = Convert.ToInt32(UserAnswer);
         }
-        finally
+
+        if (!SessionInfo.UserID.HasValue)
         {
-            SendingData = false;
+            throw new ArgumentException("UserID is empty on form submission");
         }
+
+        // TODO: Find a way to make the cast explicitly throwing exception
+        // as null UserID should never appear here, but is checked
+        // in the code above instead of here
+
+        SurveyAnswer answer = new()
+        {
+            CourseID = SessionInfo.CourseID,
+            SurveyPageModelID = Model.SurveyPageModelID,
+            UserID = SessionInfo.UserID.GetValueOrDefault(),
+            Answer = UserAnswer,
+        };
+
+        var context = DbFactory.CreateDbContext();
+        context.SurveyAnswers.Add(answer);
+        await context.SaveChangesAsync();
+
+        // TODO: Replace this code duplication with something clearer
+        if (SessionInfo.StepNumber == 0)
+        {
+            var page = await context.UserLastPages.Where(
+                    p =>
+                    p.CourseID == SessionInfo.CourseID &&
+                    p.UserID == SessionInfo.UserID).FirstOrDefaultAsync();
+
+            if (page != null)
+            {
+                // TODO: This is extremely terrible code!
+                // Find a way to pass step number to the 'GoToNextStep' method instead
+                SessionInfo.StepNumber = page.StepNumber - 1;
+            }
+            else
+            {
+                // TODO: here we assume that UserID is not null already, which can change later.
+                // Find a safer way to write this.
+                UserLastPage lastPage = new()
+                {
+                    CourseID = SessionInfo.CourseID,
+                    UserID = SessionInfo.UserID.GetValueOrDefault(),
+                    StepNumber = 0,
+                };
+
+                context.UserLastPages.Add(lastPage);
+                await context.SaveChangesAsync();
+            }
+        }
+
+        await GoToNextStep.InvokeAsync();
+
+        SendingData = false;
     }
 }

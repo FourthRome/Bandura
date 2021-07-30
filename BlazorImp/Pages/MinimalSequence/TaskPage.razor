@@ -16,7 +16,7 @@
 
     <input type="text" disabled=@SendingData id="answer" name="answer" @bind=UserAnswer>
 
-    @if (ProceedButtonEnabled)
+    @if (AnswerAttemptsLeft <= 0 || AnswerCorrectness)
     {
         <button type="button" @onclick=ButtonOnClick>Continue</button>
     }
@@ -37,10 +37,10 @@
     //-------------------------------------
     // Properties that affect UI implicitly
     //-------------------------------------
-    private int AnswerAttemptsLeft { get; set; } = 3;
+    private int AnswerAttemptsLeft { get; set; }
     private bool ShowAttemptCount { get; set; } = false;
-    private bool ProceedButtonEnabled { get; set; } = false;
     private bool SendingData { get; set; } = false;
+    private bool AnswerCorrectness { get; set; }
 
     //-------------------------------------
     // Properties that are related to logic
@@ -52,7 +52,32 @@
     [Parameter]
     public EventCallback<Task> GoToNextStep { get; set; }
     private int AttemptNumber { get; set; } = 1;
-    private bool AnswerCorrectness { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        AnswerAttemptsLeft = Model.AttemptNumberConstraint;
+
+        var context = DbFactory.CreateDbContext();
+
+        var prevAttempt = await context.TaskAttempts
+            .Where(
+                a =>
+                a.CourseID == SessionInfo.CourseID &&
+                a.TaskPageModelID == Model.TaskPageModelID &&
+                a.UserID == SessionInfo.UserID)
+            .OrderByDescending(
+                a =>
+                a.AttemptNumber)
+            .FirstOrDefaultAsync();
+
+        if (prevAttempt != null)
+        {
+            AnswerAttemptsLeft -= prevAttempt.AttemptNumber;
+            AttemptNumber = prevAttempt.AttemptNumber + 1;
+            AnswerCorrectness = prevAttempt.Correct;
+            UserAnswer = prevAttempt.Answer;
+        }
+    }
 
     private async Task SendAnswer()
     {
@@ -63,50 +88,43 @@
 
         // TODO: This is smely code, find a fix
         SendingData = true;
-        try
+
+        var context = DbFactory.CreateDbContext();
+
+        if (!SessionInfo.UserID.HasValue)
         {
-            var context = DbFactory.CreateDbContext();
-
-            if (!SessionInfo.UserID.HasValue)
-            {
-                throw new ArgumentException("UserID is empty on form submission");
-            }
-
-            // TODO: Eliminate potential race condition (what if the database has changed?)
-            AnswerCorrectness = Model.RightAnswer == UserAnswer;
-
-            // TODO: Find a way to make the cast explicitly throwing exception
-            // as null UserID should never appear here, but is checked
-            // in the code above instead of here
-            TaskAttempt attempt = new TaskAttempt()
-            {
-                CourseID = SessionInfo.CourseID,
-                TaskPageModelID = Model.TaskPageModelID,
-                AttemptNumber = AttemptNumber,
-                Answer = UserAnswer,
-                Correct = AnswerCorrectness,
-                UserID = SessionInfo.UserID.GetValueOrDefault(),
-            };
-
-            context.TaskAttempts.Add(attempt);
-            await context.SaveChangesAsync();
-
-            AttemptNumber += 1;
-            AnswerAttemptsLeft -= 1;
-
-            if (AnswerCorrectness || AnswerAttemptsLeft <= 0)
-            {
-                ProceedButtonEnabled = true;
-            }
-            if (!AnswerCorrectness)
-            {
-                ShowAttemptCount = true;
-            }
+            throw new ArgumentException("UserID is empty on form submission");
         }
-        finally
+
+        // TODO: Eliminate potential race condition (what if the database has changed?)
+        AnswerCorrectness = Model.RightAnswer == UserAnswer;
+
+        // TODO: Find a way to make the cast explicitly throwing exception
+        // as null UserID should never appear here, but is checked
+        // in the code above instead of here
+        TaskAttempt attempt = new TaskAttempt()
         {
-            SendingData = false;
+            CourseID = SessionInfo.CourseID,
+            TaskPageModelID = Model.TaskPageModelID,
+            AttemptNumber = AttemptNumber,
+            Answer = UserAnswer,
+            Correct = AnswerCorrectness,
+            UserID = SessionInfo.UserID.GetValueOrDefault(),
+        };
+
+        context.TaskAttempts.Add(attempt);
+        await context.SaveChangesAsync();
+
+        AttemptNumber += 1;
+        AnswerAttemptsLeft -= 1;
+
+        if (!AnswerCorrectness)
+        {
+            ShowAttemptCount = true;
         }
+
+        SendingData = false;
+
     }
 
 
