@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
+    <IsTransformWebConfigDisabled>true</IsTransformWebConfigDisabled>  
     <UserSecretsId>aspnet-BlazorImp-3BBE4D5C-63AA-4E1A-B0E7-49AD48AE7797</UserSecretsId>
   </PropertyGroup>
 

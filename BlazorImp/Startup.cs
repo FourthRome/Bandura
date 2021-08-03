@@ -35,7 +35,7 @@ namespace BlazorImp
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddDbContextFactory<BlazorImpContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("BlazorImpContext")));
+                    options.UseSqlServer(Configuration.GetConnectionString("BlazorImp")));
 
             //services.AddDbContext<BlazorImpContext>(options =>
             //        options.UseSqlServer(Configuration.GetConnectionString("BlazorImpContext")));
