@@ -12,7 +12,8 @@ namespace BlazorImp.Models
         public int CourseID { get; set; }
         public int TaskPageModelID { get; set; }
         public int AttemptNumber { get; set; }
-        public string Answer { get; set; }
+        public string UserAnswer { get; set; }
+        public string UserComment { get; set; }
         public bool Correct { get; set; }
     }
 }

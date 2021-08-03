@@ -7,7 +7,8 @@
 <div class="main-container">
     <h2>@Header</h2>
 
-    <p>@TaskText</p>
+    <p class="task-text">@TaskText</p>
+
 
     @if (AnswerCorrectness == false)
     {
@@ -25,9 +26,15 @@
         <p style="color:forestgreen;">That's right!</p>
     }
 
-    <p>Attempts left: @AnswerAttemptsLeft</p>
+    <div>
+        <label for="answer" class="vertical-label">Enter your answer:</label>
+        <input type="text" disabled=@(SendingData || AnswerAttemptsLeft <= 0 || AnswerCorrectness == true) id="answer" @bind=UserAnswer>
+    </div>
 
-    <input type="text" disabled=@(SendingData || AnswerAttemptsLeft <= 0 || AnswerCorrectness == true) id="answer" name="answer" @bind=UserAnswer>
+    <div>
+        <label for="comment" class="vertical-label">Please explain how you came up with that answer:</label>
+        <textarea disabled=@(SendingData || AnswerAttemptsLeft <= 0 || AnswerCorrectness == true) id="comment" rows="7" cols="80" @bind=UserComment />
+    </div>
 
     @if (AnswerAttemptsLeft <= 0 || AnswerCorrectness == true)
     {
@@ -37,6 +44,8 @@
     {
         <button type="button" disabled=@SendingData @onclick=SendAnswer>Send answer</button>
     }
+
+    <p>Attempts left: @AnswerAttemptsLeft</p>
 </div>
 
 @code {
@@ -46,6 +55,7 @@
     private string Header { get; set; } = "Task page";
     private string TaskText { get; set; } = "What is the answer?";
     private string UserAnswer { get; set; }
+    private string UserComment { get; set; }
 
     //-------------------------------------
     // Properties that affect UI implicitly
@@ -91,7 +101,8 @@
             AnswerAttemptsLeft -= prevAttempt.AttemptNumber;
             AttemptNumber = prevAttempt.AttemptNumber + 1;
             AnswerCorrectness = prevAttempt.Correct;
-            UserAnswer = prevAttempt.Answer;
+            UserAnswer = prevAttempt.UserAnswer;
+            UserComment = prevAttempt.UserComment;
         }
         else
         {
@@ -129,7 +140,8 @@
             CourseID = SessionInfo.CourseID,
             TaskPageModelID = Model.TaskPageModelID,
             AttemptNumber = AttemptNumber,
-            Answer = UserAnswer,
+            UserAnswer = UserAnswer,
+            UserComment = UserComment,
             Correct = AnswerCorrectness ?? false,
             UserID = SessionInfo.UserID.GetValueOrDefault(),
         };
@@ -141,7 +153,6 @@
         AnswerAttemptsLeft -= 1;
 
         SendingData = false;
-
     }
 
 

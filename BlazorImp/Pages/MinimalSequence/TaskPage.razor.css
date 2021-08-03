@@ -12,7 +12,11 @@
         margin-bottom: 30px;
     }
 
-label, input {
+.task-text {
+    font-size: 10em;
+}
+
+label, input, textarea {
     display: block;
     margin: auto;
 }
@@ -44,6 +48,11 @@ button {
     }
 
 input:disabled, input[disabled] {
+    background-color: darkgrey;
+    color: dimgrey;
+}
+
+textarea:disabled, input[disabled] {
     background-color: darkgrey;
     color: dimgrey;
 }
