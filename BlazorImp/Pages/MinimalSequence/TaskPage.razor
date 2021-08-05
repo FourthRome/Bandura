@@ -27,14 +27,15 @@
     }
 
     <div>
-        <label for="answer" class="vertical-label">Enter your answer:</label>
-        <input type="text" disabled=@(SendingData || AnswerAttemptsLeft <= 0 || AnswerCorrectness == true) id="answer" @bind=UserAnswer>
+        <label for="comment" class="vertical-label">Please explain how you came up with the answer:</label>
+        <textarea disabled=@(SendingData || AnswerAttemptsLeft <= 0 || AnswerCorrectness == true) id="comment" rows="7" cols="80" @bind=UserComment />
     </div>
 
     <div>
-        <label for="comment" class="vertical-label">Please explain how you came up with that answer:</label>
-        <textarea disabled=@(SendingData || AnswerAttemptsLeft <= 0 || AnswerCorrectness == true) id="comment" rows="7" cols="80" @bind=UserComment />
+        <label for="answer" class="vertical-label">Enter the answer:</label>
+        <input type="text" disabled=@(SendingData || AnswerAttemptsLeft <= 0 || AnswerCorrectness == true) id="answer" @bind=UserAnswer>
     </div>
+
 
     @if (AnswerAttemptsLeft <= 0 || AnswerCorrectness == true)
     {
@@ -42,7 +43,7 @@
     }
     else
     {
-        <button type="button" disabled=@SendingData @onclick=SendAnswer>Send answer</button>
+        <button type="button" disabled=@(SendingData || UserComment == "") @onclick=SendAnswer>Send answer</button>
     }
 
     <p>Attempts left: @AnswerAttemptsLeft</p>
@@ -54,8 +55,8 @@
     //--------------------------------------------
     private string Header { get; set; } = "Task page";
     private string TaskText { get; set; } = "What is the answer?";
-    private string UserAnswer { get; set; }
-    private string UserComment { get; set; }
+    private string UserAnswer { get; set; } = "";
+    private string UserComment { get; set; } = "";
 
     //-------------------------------------
     // Properties that affect UI implicitly
@@ -109,6 +110,8 @@
             AttemptNumber = 1;
             SendingData = false;
             AnswerCorrectness = null;
+            UserAnswer = "";
+            UserComment = "";
         }
     }
 
