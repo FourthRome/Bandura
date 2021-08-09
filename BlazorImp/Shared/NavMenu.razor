@@ -1,4 +1,6 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
+﻿@using BlazorImp.Models
+
+<div class="top-row pl-4 navbar navbar-dark">
     <a class="navbar-brand" href="">Table of contents</a>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
@@ -7,14 +9,14 @@
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <ul class="nav flex-column">
-        @foreach(var navLink in NavLinksToShow)
+        @foreach (var navLink in SessionInfo.NavLinksToShow)
         {
             <li class="nav-item px-3">
                 <a>
                     <div class="nav-link">
                         <span class="oi" aria-hidden="true"></span>@navLink
                     </div>
-                </a> 
+                </a>
             </li>
         }
     </ul>
@@ -29,7 +31,7 @@
     public EventCallback<Task> GoToPage { get; set; }
 
     [Parameter]
-    public List<string> NavLinksToShow { get; set; }
+    public SessionInfo SessionInfo { get; set; }
 
     private void ToggleNavMenu()
     {
@@ -38,12 +40,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        NavLinksToShow = new List<string>()
-        {
-            "Method 1",
-            "Method 2",
-            "Method 3"
-        };
+
     }
 
     protected override async Task OnParametersSetAsync()

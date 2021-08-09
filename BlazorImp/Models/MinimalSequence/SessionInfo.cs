@@ -12,5 +12,7 @@ namespace BlazorImp.Models
         public int CourseID { get; set; }
         public int? UserID { get; set; }
         public int StepNumber { get; set; }
+        public int LastStepNumber { get; set; }
+        public List<string> NavLinksToShow { get; set; } = new();
     }
 }

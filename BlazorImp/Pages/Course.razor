@@ -4,7 +4,7 @@
 
 <div class="page">
     <div class="sidebar">
-        <NavMenu></NavMenu>
+        <NavMenu SessionInfo=@SessionInfo GoToPage=@GoToStep/>
     </div>
 
     <div class="main">
@@ -54,6 +54,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        SessionInfo = new();
     }
 
     protected override async Task OnParametersSetAsync()
@@ -62,7 +63,6 @@
         // different components, and shared implicitly. This is
         // bad design, find a way to share information in a more direct
         // manner
-        SessionInfo = new();
         SessionInfo.CourseID = CourseID;
         SessionInfo.StepNumber = 0;
         await LoadCurrentStep();
@@ -121,8 +121,24 @@
 
         if (page != null && SessionInfo.StepNumber > page.StepNumber)
         {
+            // TODO: get rid of this redundancy
+            SessionInfo.LastStepNumber = SessionInfo.StepNumber;
             page.StepNumber = SessionInfo.StepNumber;
             await context.SaveChangesAsync();
+
+            var newPage = await context.Pages.Where(
+                p =>
+                p.CourseID == SessionInfo.CourseID &&
+                p.StepNumber == SessionInfo.StepNumber).FirstOrDefaultAsync();
+
+            if (newPage.VideoPageModelID != null)
+            {
+                var videoPageModel = await context.VideoPageModels.Where(
+                    v =>
+                    v.VideoPageModelID == newPage.VideoPageModelID)
+                    .FirstOrDefaultAsync();
+                SessionInfo.NavLinksToShow.Add(videoPageModel.Header);
+            }
         }
 
         await LoadCurrentStep();

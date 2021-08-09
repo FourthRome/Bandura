@@ -88,7 +88,24 @@
             {
                 // TODO: This is extremely terrible code!
                 // Find a way to pass step number to the 'GoToNextStep' method instead
+                SessionInfo.LastStepNumber = page.StepNumber;
                 SessionInfo.StepNumber = page.StepNumber - 1;
+
+                // TODO: And this is even worse...
+                // How do I find a video page title to display at the contents menu?
+                // And in what sourse file should it be done?
+                var linksQuery = from step in context.Pages
+                                 where step.CourseID == SessionInfo.CourseID
+                                       && step.VideoPageModelID != null
+                                       && step.StepNumber <= SessionInfo.LastStepNumber
+                                 join video in context.VideoPageModels on step.VideoPageModelID equals video.VideoPageModelID into t
+                                 from fullpage in t.DefaultIfEmpty()
+                                 select fullpage.Header;
+
+                foreach (string link in linksQuery)
+                {
+                    SessionInfo.NavLinksToShow.Add(link);
+                }
             }
             else
             {
