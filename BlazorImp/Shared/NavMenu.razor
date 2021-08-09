@@ -1,5 +1,5 @@
 ﻿<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">Bandura</a>
+    <a class="navbar-brand" href="">Table of contents</a>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -7,27 +7,47 @@
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <ul class="nav flex-column">
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> На главную
-            </NavLink>
-            <NavLink class="nav-link" href="question">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Вопросы
-            </NavLink>
-            <NavLink class="nav-link" href="controlpanel">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Администрирование
-            </NavLink>
-        </li>
+        @foreach(var navLink in NavLinksToShow)
+        {
+            <li class="nav-item px-3">
+                <a>
+                    <div class="nav-link">
+                        <span class="oi" aria-hidden="true"></span>@navLink
+                    </div>
+                </a> 
+            </li>
+        }
     </ul>
 </div>
 
+
 @code {
     private bool collapseNavMenu = true;
-
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    [Parameter]
+    public EventCallback<Task> GoToPage { get; set; }
+
+    [Parameter]
+    public List<string> NavLinksToShow { get; set; }
 
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        NavLinksToShow = new List<string>()
+        {
+            "Method 1",
+            "Method 2",
+            "Method 3"
+        };
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+
     }
 }

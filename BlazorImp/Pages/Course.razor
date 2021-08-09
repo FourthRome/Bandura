@@ -2,30 +2,40 @@
 @using BlazorImp.Models
 @inject IDbContextFactory<BlazorImpContext> DbFactory
 
-@if (CourseID != null)
-{
-    @switch (CurrentPageType)
-    {
-        case PageType.InfoPage:
-            <BlazorImp.Pages.MinimalSequence.InfoPage Model=@InfoPage GoToNextStep=@GoToNextStep SessionInfo=@SessionInfo/>
-            break;
-        case PageType.SurveyPage:
-            <BlazorImp.Pages.MinimalSequence.SurveyPage Model=@SurveyPage GoToNextStep=@GoToNextStep SessionInfo=@SessionInfo/>
-            break;
-        case PageType.VideoPage:
-            <BlazorImp.Pages.MinimalSequence.VideoPage Model=@VideoPage GoToNextStep=@GoToNextStep SessionInfo=@SessionInfo/>
-            break;
-        case PageType.TaskPage:
-            <BlazorImp.Pages.MinimalSequence.TaskPage Model=@TaskPage GoToNextStep=@GoToNextStep SessionInfo=@SessionInfo/>
-            break;
-        case PageType.FinalPage:
-            <BlazorImp.Pages.MinimalSequence.FinalPage Model=@FinalPage SessionInfo=@SessionInfo/>
-            break;
-        default:
-            <p>PageType is not specified</p>
-            break;
-    }
-}
+<div class="page">
+    <div class="sidebar">
+        <NavMenu></NavMenu>
+    </div>
+
+    <div class="main">
+        <div class="content">
+            @if (CourseID != null)
+            {
+                @switch (CurrentPageType)
+                {
+                    case PageType.InfoPage:
+                        <BlazorImp.Pages.MinimalSequence.InfoPage Model=@InfoPage GoToNextStep=@GoToNextStep SessionInfo=@SessionInfo />
+                        break;
+                    case PageType.SurveyPage:
+                        <BlazorImp.Pages.MinimalSequence.SurveyPage Model=@SurveyPage GoToNextStep=@GoToNextStep SessionInfo=@SessionInfo />
+                        break;
+                    case PageType.VideoPage:
+                        <BlazorImp.Pages.MinimalSequence.VideoPage Model=@VideoPage GoToNextStep=@GoToNextStep SessionInfo=@SessionInfo />
+                        break;
+                    case PageType.TaskPage:
+                        <BlazorImp.Pages.MinimalSequence.TaskPage Model=@TaskPage GoToNextStep=@GoToNextStep SessionInfo=@SessionInfo />
+                        break;
+                    case PageType.FinalPage:
+                        <BlazorImp.Pages.MinimalSequence.FinalPage Model=@FinalPage SessionInfo=@SessionInfo />
+                        break;
+                    default:
+                        <p>PageType is not specified</p>
+                        break;
+                }
+            }
+        </div>
+    </div>
+</div>
 
 
 @code {
@@ -49,7 +59,7 @@
     protected override async Task OnParametersSetAsync()
     {
         // TODO: SessionInfo consists of information shared between
-        // different components, and shared implicitly. This is 
+        // different components, and shared implicitly. This is
         // bad design, find a way to share information in a more direct
         // manner
         SessionInfo = new();
@@ -71,7 +81,7 @@
         {
             CurrentPageType = page.PageType;
 
-            switch(CurrentPageType)
+            switch (CurrentPageType)
             {
                 case PageType.InfoPage:
                     InfoPage = await context.InfoPageModels.Where(
@@ -116,5 +126,10 @@
         }
 
         await LoadCurrentStep();
+    }
+
+    public async Task GoToStep()
+    {
+
     }
 }
