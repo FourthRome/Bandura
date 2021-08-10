@@ -355,3 +355,4 @@ MigrationBackup/
 #--------------------
 BlazorImp/appsettings.Production.json
 BlazorImp/.config
+RawData
