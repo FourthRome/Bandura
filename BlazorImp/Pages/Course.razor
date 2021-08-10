@@ -20,7 +20,7 @@
                         <BlazorImp.Pages.MinimalSequence.SurveyPage Model=@SurveyPage GoToNextStep=@GoToNextStep SessionInfo=@SessionInfo />
                         break;
                     case PageType.VideoPage:
-                        <BlazorImp.Pages.MinimalSequence.VideoPage Model=@VideoPage GoToNextStep=@GoToNextStep SessionInfo=@SessionInfo />
+                        <BlazorImp.Pages.MinimalSequence.VideoPage Model=@VideoPage GoToNextStep=@GoToNextStep GoToLastStep=@GoToLastStep SessionInfo=@SessionInfo />
                         break;
                     case PageType.TaskPage:
                         <BlazorImp.Pages.MinimalSequence.TaskPage Model=@TaskPage GoToNextStep=@GoToNextStep SessionInfo=@SessionInfo />
@@ -137,15 +137,22 @@
                     v =>
                     v.VideoPageModelID == newPage.VideoPageModelID)
                     .FirstOrDefaultAsync();
-                SessionInfo.NavLinksToShow.Add(videoPageModel.Header);
+                SessionInfo.MenuItems.Add(new MenuItem() { Caption = videoPageModel.Header, StepNumber = SessionInfo.StepNumber});
             }
         }
 
         await LoadCurrentStep();
     }
 
-    public async Task GoToStep()
+    public async Task GoToStep(int stepNumber)
     {
+        SessionInfo.StepNumber = stepNumber;
+        await LoadCurrentStep();
+    }
 
+    public async Task GoToLastStep()
+    {
+        SessionInfo.StepNumber = SessionInfo.LastStepNumber;
+        await LoadCurrentStep();
     }
 }

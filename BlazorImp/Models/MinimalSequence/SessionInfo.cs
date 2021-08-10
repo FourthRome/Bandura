@@ -13,6 +13,12 @@ namespace BlazorImp.Models
         public int? UserID { get; set; }
         public int StepNumber { get; set; }
         public int LastStepNumber { get; set; }
-        public List<string> NavLinksToShow { get; set; } = new();
+        public List<MenuItem> MenuItems { get; set; } = new();
+    }
+
+    public struct MenuItem
+    {
+        public string Caption { get; set; }
+        public int StepNumber { get; set; }
     }
 }

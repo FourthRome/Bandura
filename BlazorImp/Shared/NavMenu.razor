@@ -9,12 +9,12 @@
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <ul class="nav flex-column">
-        @foreach (var navLink in SessionInfo.NavLinksToShow)
+        @foreach (var navItem in SessionInfo.MenuItems)
         {
             <li class="nav-item px-3">
-                <a>
+                <a @onclick=@(() => OnMenuItemClicked(navItem.StepNumber))>
                     <div class="nav-link">
-                        <span class="oi" aria-hidden="true"></span>@navLink
+                        <span class="oi" aria-hidden="true"></span>@navItem.Caption
                     </div>
                 </a>
             </li>
@@ -28,7 +28,7 @@
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
     [Parameter]
-    public EventCallback<Task> GoToPage { get; set; }
+    public EventCallback<int> GoToPage { get; set; }
 
     [Parameter]
     public SessionInfo SessionInfo { get; set; }
@@ -46,5 +46,10 @@
     protected override async Task OnParametersSetAsync()
     {
 
+    }
+
+    protected async Task OnMenuItemClicked(int stepNumber)
+    {
+        await GoToPage.InvokeAsync(stepNumber);
     }
 }

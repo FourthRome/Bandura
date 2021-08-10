@@ -25,7 +25,14 @@
 
     <p>@MainText</p>
 
-    <button type="button" @onclick="ButtonOnClick">Continue</button>
+    @if (SessionInfo.StepNumber == SessionInfo.LastStepNumber)
+    {
+        <button type="button" @onclick="OnContinueButtonClick">Continue</button>
+    }
+    else
+    {
+        <button type="button" @onclick="OnReturnButtonClick">Return to the course</button>
+    }
 </div>
 
 
@@ -45,6 +52,8 @@
     public SessionInfo SessionInfo { get; set; }
     [Parameter]
     public EventCallback<Task> GoToNextStep { get; set; }
+    [Parameter]
+    public EventCallback<Task> GoToLastStep { get; set; }
     private string VideoURI { get; set; } = "https://www.youtube.com/embed/dQw4w9WgXcQ";
     private string PlayerOptions { get; set; } = "?disablekb=1&iv_load_policy=3&modestbranding=1";
 
@@ -56,8 +65,13 @@
         VideoURI = Model.VideoURI;
     }
 
-    private async Task ButtonOnClick()
+    private async Task OnContinueButtonClick()
     {
         await GoToNextStep.InvokeAsync();
+    }
+
+    private async Task OnReturnButtonClick()
+    {
+        await GoToLastStep.InvokeAsync();
     }
 }
