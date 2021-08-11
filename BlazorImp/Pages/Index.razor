@@ -17,10 +17,10 @@
                 }
 
                 <label class="vertical-label" for="answer">Please enter your login:</label>
-                <input type="text" id="answer" name="answer" @bind="@UserLogin"/>
+                <input type="text" id="answer" name="answer" @bind=UserLogin @bind:event="oninput"/>
 
                 <label class="vertical-label" for="answer">Please enter your password:</label>
-                <input type="password" id="password" name="password" @bind="@UserPassword"/>
+                <input type="password" id="password" name="password" @bind=UserPassword @bind:event="oninput"/>
 
                 <button type="button" disabled=@(UserLogin == "" || UserPassword == "" || SendingData) @onclick="OnLoginButtonClick">Login</button>
             </div>

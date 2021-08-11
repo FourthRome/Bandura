@@ -9,7 +9,7 @@
     <p>@((MarkupString)MainText)</p>
 
     <label class="vertical-label" for="answer">@Question</label>
-    <input type="text" id="answer" name="answer" disabled=@SendingData @bind="@UserAnswer">
+    <input type="text" id="answer" name="answer" disabled=@SendingData @bind="@UserAnswer"  @bind:event="oninput"/>
     <button type="button" disabled=@(SendingData || UserAnswer == "") @onclick="ButtonOnClick">Continue</button>
 </div>
 @code {
