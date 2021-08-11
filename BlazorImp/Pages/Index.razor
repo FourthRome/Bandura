@@ -1,7 +1,129 @@
 ﻿@page "/"
 
-<Course CourseID="1" />
+@using Microsoft.EntityFrameworkCore
+@using BlazorImp.Models
+@using BlazorImp.Data
+@inject IDbContextFactory<BlazorImpContext> DbFactory
+
+
+@if (SessionInfo.UserID == null)
+{
+    <div class="page">
+        <div class="main">
+            <div class="login-box">
+                @if (IncorrectLoginData)
+                {
+                    <p style="color: red;">Incorrect login data; please try again.</p>
+                }
+
+                <label class="vertical-label" for="answer">Please enter your login:</label>
+                <input type="text" id="answer" name="answer" @bind="@UserLogin"/>
+
+                <label class="vertical-label" for="answer">Please enter your password:</label>
+                <input type="password" id="password" name="password" @bind="@UserPassword"/>
+
+                <button type="button" disabled=@(UserLogin == "" || UserPassword == "" || SendingData) @onclick="OnLoginButtonClick">Login</button>
+            </div>
+        </div>
+    </div>
+}
+else if (SessionInfo.CourseID == 0)
+{
+    <div class="page">
+        <div class="main">
+            <div class="main-page">
+                @foreach (Course course in UserCourses)
+                {
+                    <div class="main-page-item" @onclick=@(() => SessionInfo.CourseID = course.CourseID)>@course.Name</div>
+                }
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <!-- TODO: Is this recreating object and all its contents every time? -->
+    <CourseComponent CourseID=SessionInfo.CourseID SessionInfo=SessionInfo/>
+}
 
 @code {
+    //--------------------------------------------
+    // Properties that map to UI elements directly
+    //--------------------------------------------
+    public string UserLogin { get; set; } = "";
+    public string UserPassword { get; set; } = "";
 
+    //-------------------------------------
+    // Properties that affect UI implicitly
+    //-------------------------------------
+    private bool SendingData { get; set; } = false;
+    private bool IncorrectLoginData { get; set; } = false;
+
+    //-------------------------------------
+    // Properties that are related to logic
+    //-------------------------------------
+    private SessionInfo SessionInfo { get; set; }
+    private List<Course> UserCourses { get; set; }
+
+
+    //---------------
+    // Event handlers
+    //---------------
+    protected override async Task OnInitializedAsync()
+    {
+        // TODO: SessionInfo consists of information shared between
+        // different components, and shared implicitly. This is
+        // bad design, find a way to share information in a more direct
+        // manner
+        SessionInfo = new();
+        UserCourses = new();
+    }
+
+    private async Task OnLoginButtonClick()
+    {
+        // TODO: Is there an approach similar to 'using' keyword for this task?
+        SendingData = true;
+        IncorrectLoginData = false;
+
+        var context = DbFactory.CreateDbContext();
+
+        var user = await context.Users.Where(
+                u =>
+                u.Login == UserLogin &&
+                u.Password == UserPassword)
+                .FirstOrDefaultAsync();
+
+        if (user != null)
+        {
+            SessionInfo.UserID = user.UserID;
+            await LoadUserCourses();
+        }
+        else
+        {
+            IncorrectLoginData = true;
+        }
+
+        SendingData = false;
+    }
+
+
+    private async Task LoadUserCourses()
+    {
+        var context = DbFactory.CreateDbContext();
+
+        var courseIDsQuery = from membership in context.CourseMemberships
+                             where membership.UserID == SessionInfo.UserID
+                             select membership.CourseID;
+
+        // TODO: Find a way to replace list with set directly
+        HashSet<int> courseIDsSet = new(courseIDsQuery);
+
+        var courses = await context.Courses.Where(
+                c =>
+                courseIDsSet.Contains(c.CourseID))
+                .ToListAsync();
+
+        courses.Sort((x, y) =>  x.Name.CompareTo(y.Name));
+        UserCourses = courses;
+    }
 }

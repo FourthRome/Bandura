@@ -41,6 +41,8 @@
 @code {
     [Parameter]
     public int CourseID { get; set; }
+    [Parameter]
+    public SessionInfo SessionInfo { get; set; }
 
     // TODO: I don't like this state machine approach, find a better way to
     // render the required component
@@ -50,21 +52,53 @@
     private VideoPageModel? VideoPage { get; set; }
     private TaskPageModel? TaskPage { get; set; }
     private FinalPageModel? FinalPage { get; set; }
-    public SessionInfo SessionInfo { get; set; }
 
-    protected override async Task OnInitializedAsync()
-    {
-        SessionInfo = new();
-    }
 
     protected override async Task OnParametersSetAsync()
     {
-        // TODO: SessionInfo consists of information shared between
-        // different components, and shared implicitly. This is
-        // bad design, find a way to share information in a more direct
-        // manner
-        SessionInfo.CourseID = CourseID;
-        SessionInfo.StepNumber = 0;
+        var context = DbFactory.CreateDbContext();
+
+        UserLastPage lastPage = await context.UserLastPages.Where(
+                p =>
+                p.CourseID == SessionInfo.CourseID &&
+                p.UserID == SessionInfo.UserID
+                ).FirstOrDefaultAsync();
+
+        if (lastPage != null)
+        {
+            // TODO: Is this redundant, or we do need both these fields?
+            SessionInfo.LastStepNumber = lastPage.StepNumber;
+            SessionInfo.StepNumber = lastPage.StepNumber;
+
+            // TODO: Find out if this LINQ query can be simplified
+            var menuItemsQuery = from step in context.Pages
+                                 where step.CourseID == SessionInfo.CourseID
+                                       && step.VideoPageModelID != null
+                                       && step.StepNumber <= SessionInfo.LastStepNumber
+                                 join video in context.VideoPageModels on step.VideoPageModelID equals video.VideoPageModelID into t
+                                 from fullpage in t.DefaultIfEmpty()
+                                 select new MenuItem { Caption = fullpage.Header, StepNumber = step.StepNumber };
+
+            // TODO: Fix ordering (right now it's not guaranteed)
+            // TODO: Probably add elements is not the greatest idea, check with several courses
+            foreach (var item in menuItemsQuery)
+            {
+                SessionInfo.MenuItems.Add(item);
+            }
+        }
+        else
+        {
+            lastPage = new()
+            {
+                CourseID = SessionInfo.CourseID,
+                UserID = SessionInfo.UserID.GetValueOrDefault(),
+                StepNumber = 0,
+            };
+
+            context.UserLastPages.Add(lastPage);
+            await context.SaveChangesAsync();
+        }
+
         await LoadCurrentStep();
     }
 
