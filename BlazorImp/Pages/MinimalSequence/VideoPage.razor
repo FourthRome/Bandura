@@ -2,7 +2,7 @@
 @using BlazorImp.Models
 
 <div class="main-container">
-    <h2>@Header</h2>
+    <h2>@((MarkupString)Header)</h2>
 
     <!-- TODO: switch to server-hosted videos -->
     <!-- Thanks to https://stackoverflow.com/users/2534840/orangutan for the wonderful snippet
@@ -23,7 +23,7 @@
         </div>
     </div>
 
-    <p>@MainText</p>
+    <p>@((MarkupString)MainText)</p>
 
     @if (SessionInfo.StepNumber == SessionInfo.LastStepNumber)
     {

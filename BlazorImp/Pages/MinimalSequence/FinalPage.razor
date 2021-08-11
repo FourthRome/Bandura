@@ -2,9 +2,9 @@
 @using BlazorImp.Models
 
 <div class="main-container">
-    <h2>@Header</h2>
+    <h2>@((MarkupString)Header)</h2>
 
-    <p>@MainText</p>
+    <p>@((MarkupString)MainText)</p>
 </div>
 
 @code {

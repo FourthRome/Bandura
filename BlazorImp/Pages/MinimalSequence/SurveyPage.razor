@@ -4,9 +4,9 @@
 @inject IDbContextFactory<BlazorImpContext> DbFactory
 
 <div class="main-container">
-    <h2>@Header</h2>
+    <h2>@((MarkupString)Header)</h2>
 
-    <p>@MainText</p>
+    <p>@((MarkupString)MainText)</p>
 
     <label class="vertical-label" for="answer">@Question</label>
     <input type="text" id="answer" name="answer" disabled=@SendingData @bind="@UserAnswer">

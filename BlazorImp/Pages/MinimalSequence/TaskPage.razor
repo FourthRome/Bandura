@@ -5,9 +5,9 @@
 
 
 <div class="main-container">
-    <h2>@Header</h2>
+    <h2>@((MarkupString)Header)</h2>
 
-    <p class="task-text">@TaskText</p>
+    <p class="task-text">@((MarkupString)TaskText)</p>
 
 
     @if (AnswerCorrectness == false)
