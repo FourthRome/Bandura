@@ -26,6 +26,7 @@ namespace BlazorImp.Data
         public DbSet<VideoPageModel> VideoPageModels { get; set; }
         public DbSet<TaskPageModel> TaskPageModels { get; set; }
         public DbSet<FinalPageModel> FinalPageModels { get; set; }
+        public DbSet<CourseMembership> CourseMemberships { get; set; }
 
 
         public BlazorImpContext (DbContextOptions<BlazorImpContext> options) : base(options)
@@ -56,6 +57,7 @@ namespace BlazorImp.Data
             modelBuilder.Entity<VideoPageModel>().ToTable("VideoPageModels");
             modelBuilder.Entity<TaskPageModel>().ToTable("TaskPageModels");
             modelBuilder.Entity<FinalPageModel>().ToTable("FinalPageModels");
-    }
+            modelBuilder.Entity<CourseMembership>().ToTable("CourseMemberships");
+        }
     }
 }
