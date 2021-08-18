@@ -42,7 +42,7 @@
     [Parameter]
     public int CourseID { get; set; }
     [Parameter]
-    public SessionInfo SessionInfo { get; set; }
+    public SessionInfo SessionInfo { get; set; }  // TODO: Find a way to make this dependency between element less obscure
 
     // TODO: I don't like this state machine approach, find a better way to
     // render the required component
@@ -58,6 +58,10 @@
     {
         var context = DbFactory.CreateDbContext();
 
+        // Logic for retrieving course structure
+        await LoadCourseStructure();
+
+        // Logic for loading last page
         UserLastPage lastPage = await context.UserLastPages.Where(
                 p =>
                 p.CourseID == SessionInfo.CourseID &&
@@ -70,20 +74,23 @@
             SessionInfo.LastStepNumber = lastPage.StepNumber;
             SessionInfo.StepNumber = lastPage.StepNumber;
 
-            // TODO: Find out if this LINQ query can be simplified
-            var menuItemsQuery = from step in context.Pages
-                                 where step.CourseID == SessionInfo.CourseID
-                                       && step.VideoPageModelID != null
-                                       && step.StepNumber <= SessionInfo.LastStepNumber
-                                 join video in context.VideoPageModels on step.VideoPageModelID equals video.VideoPageModelID into t
-                                 from fullpage in t.DefaultIfEmpty()
-                                 select new MenuItem { Caption = fullpage.Header, StepNumber = step.StepNumber };
-
-            // TODO: Fix ordering (right now it's not guaranteed)
-            // TODO: Probably add elements is not the greatest idea, check with several courses
-            foreach (var item in menuItemsQuery)
+            // TODO: Probably adding elements is not the greatest idea, check with several courses
+            // TODO: This is probably very slow, refactor and introduce cache
+            for (int stepNumber = 0; stepNumber <= SessionInfo.LastStepNumber; ++stepNumber)
             {
-                SessionInfo.MenuItems.Add(item);
+                Page page = await context.Pages.Where(
+                        p =>
+                        p.PageID == SessionInfo.FlatCourseTree[stepNumber])
+                        .FirstAsync();
+
+                if (page.PageType == PageType.VideoPage)
+                {
+                    VideoPageModel model = await context.VideoPageModels.Where(
+                            m =>
+                            m.VideoPageModelID == page.VideoPageModelID)
+                            .FirstAsync();
+                    SessionInfo.MenuItems.Add(new MenuItem { Caption=model.Header, StepNumber=stepNumber });
+                }
             }
         }
         else
@@ -107,9 +114,9 @@
         using var context = DbFactory.CreateDbContext();
 
         var page = await context.Pages.Where(
-            p =>
-            p.CourseID == CourseID &&
-            p.StepNumber == SessionInfo.StepNumber).FirstOrDefaultAsync();
+                p =>
+                p.PageID == SessionInfo.FlatCourseTree[SessionInfo.StepNumber])
+                .FirstOrDefaultAsync();
 
         if (page != null)
         {
@@ -151,7 +158,8 @@
         var page = await context.UserLastPages.Where(
                 p =>
                 p.CourseID == SessionInfo.CourseID &&
-                p.UserID == SessionInfo.UserID).FirstOrDefaultAsync();
+                p.UserID == SessionInfo.UserID)
+                .FirstOrDefaultAsync();
 
         if (page != null && SessionInfo.StepNumber > page.StepNumber)
         {
@@ -162,8 +170,8 @@
 
             var newPage = await context.Pages.Where(
                 p =>
-                p.CourseID == SessionInfo.CourseID &&
-                p.StepNumber == SessionInfo.StepNumber).FirstOrDefaultAsync();
+                p.PageID == SessionInfo.FlatCourseTree[SessionInfo.StepNumber])
+                .FirstOrDefaultAsync();
 
             if (newPage.VideoPageModelID != null)
             {
@@ -171,7 +179,7 @@
                     v =>
                     v.VideoPageModelID == newPage.VideoPageModelID)
                     .FirstOrDefaultAsync();
-                SessionInfo.MenuItems.Add(new MenuItem() { Caption = videoPageModel.Header, StepNumber = SessionInfo.StepNumber});
+                SessionInfo.MenuItems.Add(new MenuItem { Caption = videoPageModel.Header, StepNumber = SessionInfo.StepNumber});
             }
         }
 
@@ -188,5 +196,30 @@
     {
         SessionInfo.StepNumber = SessionInfo.LastStepNumber;
         await LoadCurrentStep();
+    }
+
+    public async Task LoadCourseStructure()
+    {
+        var context = DbFactory.CreateDbContext();
+
+        // Course object with current ID
+        var course = await context.Courses.Where(
+                c =>
+                c.CourseID == CourseID)
+                .FirstAsync();
+
+        // Root element of the course
+        var courseRootSequence = await context.CourseSequences.Where(
+                e =>
+                e.CourseSequenceID == course.CourseSequenceID)
+                .FirstAsync();
+
+        // Initialize element tree (this part may become implicit)
+        await courseRootSequence.LoadTreeFromDb();
+
+        // Initialize flat course structure (required for navigation)
+        await courseRootSequence.FillFlatCourseTree(SessionInfo.FlatCourseTree);
+
+        SessionInfo.RootCourseSequence = courseRootSequence;
     }
 }

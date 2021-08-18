@@ -17,8 +17,8 @@ namespace BlazorImp.Data
         public DbSet<TaskPageModel> TaskPageModels { get; set; }
         public DbSet<FinalPageModel> FinalPageModels { get; set; }
         public DbSet<CourseMembership> CourseMemberships { get; set; }
-        public DbSet<CourseElement> CourseElement { get; set; }
-        public DbSet<CourseElementSequence> CourseElementSequence { get; set; }
+        public DbSet<CourseSequenceElement> CourseSequenceElements { get; set; }
+        public DbSet<CourseSequence> CourseSequences { get; set; }
         public DbSet<PageStat> PageStats { get; set; }
 
 
@@ -41,8 +41,8 @@ namespace BlazorImp.Data
             modelBuilder.Entity<TaskPageModel>().ToTable("TaskPageModels");
             modelBuilder.Entity<FinalPageModel>().ToTable("FinalPageModels");
             modelBuilder.Entity<CourseMembership>().ToTable("CourseMemberships");
-            modelBuilder.Entity<CourseElement>().ToTable("CourseElements");
-            modelBuilder.Entity<CourseElementSequence>().ToTable("CourseElementSequences");
+            modelBuilder.Entity<CourseSequenceElement>().ToTable("CourseSequenceElements");
+            modelBuilder.Entity<CourseSequence>().ToTable("CourseSequences");
             modelBuilder.Entity<PageStat>().ToTable("PageStats");
         }
     }
