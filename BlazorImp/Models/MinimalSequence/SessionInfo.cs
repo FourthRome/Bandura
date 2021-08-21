@@ -15,7 +15,7 @@ namespace BlazorImp.Models
         public int LastStepNumber { get; set; }
         public List<MenuItem> MenuItems { get; set; } = new();
         public CourseSequence RootCourseSequence { get; set; }
-        public List<int> FlatCourseTree { get; set; } = new(); // List of PageIDs
+        public List<Page> FlatCourseTree { get; set; } = new(); // List of PageIDs
     }
 
     public struct MenuItem

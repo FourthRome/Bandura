@@ -1,0 +1,39 @@
+﻿@using BlazorImp.Models
+
+<div class="main-container">
+
+    <p>Your score: @(Score)/@(MaxScore) points.</p>
+
+    <button type="button" @onclick="ButtonOnClick">Continue</button>
+</div>
+
+@code {
+    //--------------------------------------------
+    // Properties that map to UI elements directly
+    //--------------------------------------------
+
+    //-------------------------------------
+    // Properties that affect UI implicitly
+    //-------------------------------------
+    public int Score { get; set; }
+    public int MaxScore { get; set; }
+
+    //-------------------------------------
+    // Properties that are related to logic
+    //-------------------------------------
+    [Parameter]
+    public SessionInfo SessionInfo { get; set; }
+    [Parameter]
+    public EventCallback<Task> GoToNextStep { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        CourseSequence parent = SessionInfo.FlatCourseTree[SessionInfo.StepNumber].ParentSequence;
+        (Score, MaxScore) = await parent.GetScore(SessionInfo.CourseID, SessionInfo.UserID.GetValueOrDefault());  // TODO: It should never be default here
+    }
+
+    private async Task ButtonOnClick()
+    {
+        await GoToNextStep.InvokeAsync();
+    }
+}

@@ -28,6 +28,9 @@
                     case PageType.FinalPage:
                         <BlazorImp.Pages.MinimalSequence.FinalPage Model=@FinalPage SessionInfo=@SessionInfo />
                         break;
+                    case PageType.ScorePage:
+                        <BlazorImp.Pages.MinimalSequence.ScorePage GoToNextStep=@GoToNextStep SessionInfo=@SessionInfo />
+                        break;
                     default:
                         <p>PageType is not specified</p>
                         break;
@@ -78,10 +81,13 @@
             // TODO: This is probably very slow, refactor and introduce cache
             for (int stepNumber = 0; stepNumber <= SessionInfo.LastStepNumber; ++stepNumber)
             {
-                Page page = await context.Pages.Where(
-                        p =>
-                        p.PageID == SessionInfo.FlatCourseTree[stepNumber])
-                        .FirstAsync();
+                //Page page = await context.Pages.Where(
+                //        p =>
+                //        p.PageID == SessionInfo.FlatCourseTree[stepNumber])
+                //        .FirstAsync();
+
+                // EXPERIMENT: Try to load the whole course structure at once, not just IDs
+                Page page = SessionInfo.FlatCourseTree[stepNumber];
 
                 if (page.PageType == PageType.VideoPage)
                 {
@@ -113,10 +119,14 @@
     {
         using var context = DbFactory.CreateDbContext();
 
-        var page = await context.Pages.Where(
-                p =>
-                p.PageID == SessionInfo.FlatCourseTree[SessionInfo.StepNumber])
-                .FirstOrDefaultAsync();
+        //var page = await context.Pages.Where(
+        //        p =>
+        //        p.PageID == SessionInfo.FlatCourseTree[SessionInfo.StepNumber])
+        //        .FirstOrDefaultAsync();
+
+        // EXPERIMENT: Try to load the whole course structure at once, not just IDs
+        Page page = SessionInfo.FlatCourseTree[SessionInfo.StepNumber];
+
 
         if (page != null)
         {
@@ -135,7 +145,7 @@
                 case PageType.VideoPage:
                     VideoPage = await context.VideoPageModels.Where(
                         m => m.VideoPageModelID == page.VideoPageModelID).FirstOrDefaultAsync();
-                    break;
+                   break;
                 case PageType.TaskPage:
                     TaskPage = await context.TaskPageModels.Where(
                         m => m.TaskPageModelID == page.TaskPageModelID).FirstOrDefaultAsync();
@@ -168,10 +178,13 @@
             page.StepNumber = SessionInfo.StepNumber;
             await context.SaveChangesAsync();
 
-            var newPage = await context.Pages.Where(
-                p =>
-                p.PageID == SessionInfo.FlatCourseTree[SessionInfo.StepNumber])
-                .FirstOrDefaultAsync();
+            //var newPage = await context.Pages.Where(
+            //    p =>
+            //    p.PageID == SessionInfo.FlatCourseTree[SessionInfo.StepNumber])
+            //    .FirstOrDefaultAsync();
+
+            // EXPERIMENT: Try to load the whole course structure at once, not just IDs
+            Page newPage = SessionInfo.FlatCourseTree[SessionInfo.StepNumber];
 
             if (newPage.VideoPageModelID != null)
             {

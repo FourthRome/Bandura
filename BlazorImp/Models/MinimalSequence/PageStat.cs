@@ -3,9 +3,9 @@
     public class PageStat
     {
         public int PageStatID { get; set; }
+        public int PageID { get; set; }
         public int CourseID { get; set; }
         public int UserID { get; set; }
-        public bool HasTaskStat { get; set; }
-        public bool? CorrectAsnwerGiven { get; set; }
+        public bool CorrectAnswerGiven { get; set; }
     }
 }

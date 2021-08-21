@@ -60,9 +60,12 @@
     protected override async Task OnParametersSetAsync()
     {
         // Map Model's data to UI
-        Header = Model.Header;
-        MainText = Model.MainText;
-        VideoURI = Model.VideoURI;
+        if (Model != null)
+        {
+            Header = Model.Header;
+            MainText = Model.MainText;
+            VideoURI = Model.VideoURI;
+        }
     }
 
     private async Task OnContinueButtonClick()

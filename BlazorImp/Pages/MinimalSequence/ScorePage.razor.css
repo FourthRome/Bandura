@@ -1,0 +1,39 @@
+﻿body {
+}
+
+.main-container {
+    margin: 10px 30%;
+    padding-top: 20px;
+    text-align: center;
+    align-content: center;
+}
+
+    .main-container > * {
+        margin-bottom: 30px;
+    }
+
+label, input {
+    display: block;
+    margin: auto;
+}
+
+.vertical-label {
+    margin-bottom: 5px;
+}
+
+button {
+    background-color: forestgreen;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border: 2px solid white;
+}
+
+    button:active {
+        outline: none;
+        background-color: white;
+        color: forestgreen;
+        border: 2px solid forestgreen;
+    }

@@ -152,6 +152,34 @@
         context.TaskAttempts.Add(attempt);
         await context.SaveChangesAsync();
 
+        // Save stat
+        // TODO: Add a method to the SessionInfo class to retrieve info
+        // about current Page more easily
+        PageStat stat = await context.PageStats.Where(
+                s =>
+                s.CourseID == SessionInfo.CourseID &&
+                s.UserID == SessionInfo.UserID &&
+                s.PageID == SessionInfo.FlatCourseTree[SessionInfo.StepNumber].PageID)
+                .FirstOrDefaultAsync();
+
+        if (stat != null)
+        {
+            stat.CorrectAnswerGiven = AnswerCorrectness ?? false;
+        }
+        else
+        {
+            stat = new PageStat
+            {
+                CourseID = SessionInfo.CourseID,
+                UserID = SessionInfo.UserID.GetValueOrDefault(),
+                PageID = SessionInfo.FlatCourseTree[SessionInfo.StepNumber].PageID,
+                CorrectAnswerGiven = AnswerCorrectness ?? false
+            };
+            context.PageStats.Add(stat);
+        }
+
+        await context.SaveChangesAsync();
+
         AttemptNumber += 1;
         AnswerAttemptsLeft -= 1;
 
