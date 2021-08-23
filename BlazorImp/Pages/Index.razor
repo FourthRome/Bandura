@@ -96,6 +96,18 @@ else
         if (user != null)
         {
             SessionInfo.UserID = user.UserID;
+            UserAction action = new UserAction
+            {
+                CourseID = 0,
+                UserID = user.UserID,
+                SourcePageID = null,
+                DestinationPageID = null,
+                Type = ActionType.Login,
+                Timestamp = DateTime.UtcNow,
+                Message = "Successful login"
+            };
+            context.UserActions.Add(action);
+            await context.SaveChangesAsync();
             await LoadUserCourses();
         }
         else

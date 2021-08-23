@@ -20,7 +20,7 @@ namespace BlazorImp.Data
         public DbSet<CourseSequenceElement> CourseSequenceElements { get; set; }
         public DbSet<CourseSequence> CourseSequences { get; set; }
         public DbSet<PageStat> PageStats { get; set; }
-
+        public DbSet<UserAction> UserActions { get; set; }
 
         public BlazorImpContext (DbContextOptions<BlazorImpContext> options) : base(options)
         {
@@ -44,6 +44,7 @@ namespace BlazorImp.Data
             modelBuilder.Entity<CourseSequenceElement>().ToTable("CourseSequenceElements");
             modelBuilder.Entity<CourseSequence>().ToTable("CourseSequences");
             modelBuilder.Entity<PageStat>().ToTable("PageStats");
+            modelBuilder.Entity<UserAction>().ToTable("UserActions");
         }
     }
 }
