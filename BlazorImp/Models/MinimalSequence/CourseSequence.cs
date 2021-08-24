@@ -84,7 +84,7 @@ namespace BlazorImp.Models
             {
                 foreach (ICourseSequenceElement element in Sequence)
                 {
-                    (int, int) temp = await element.GetScore(courseID, userID, calledByParent = true);
+                    (int, int) temp = await element.GetScore(courseID, userID, true);
                     if (element.ShouldPropagateProgress)
                     {
                         score += temp.Item1;
