@@ -14,40 +14,40 @@
     {
         if (AnswerAttemptsLeft > 0)
         {
-            <p style="color:red;">The answer is incorrect; please try again.</p>
+            <p style="color:red;">Неверный ответ; пожалуйста, попробуйте ещё.</p>
         }
         else
         {
-            <h4 style="color:red;">The answer is incorrect.</h4>
+            <h4 style="color:red;">Неверный ответ.</h4>
         }
     }
     else if (AnswerCorrectness == true)
     {
-        <h4 style="color:forestgreen;">That's right!</h4>
+        <h4 style="color:forestgreen;">Правильно!</h4>
     }
 
     <div style="font-size:larger">
-        <label for="comment" class="vertical-label">Please explain how you came up with the answer:</label>
+        <label for="comment" class="vertical-label">Пожалуйста, распишите своё решение по шагам:</label>
         <textarea disabled=@(SendingData || AnswerAttemptsLeft <= 0 || AnswerCorrectness == true) id="comment" rows="7" @bind=UserComment @bind:event="oninput" />
     </div>
 
     <div style="font-size:larger">
-        <label for="answer" class="vertical-label">Enter the answer:</label>
+        <label for="answer" class="vertical-label">Ваш ответ:</label>
         <input type="text" disabled=@(SendingData || AnswerAttemptsLeft <= 0 || AnswerCorrectness == true) id="answer" @bind=UserAnswer @bind:event="oninput" />
     </div>
 
 
     @if (AnswerAttemptsLeft <= 0 || AnswerCorrectness == true)
     {
-        <button type="button" @onclick=ButtonOnClick>Continue</button>
+        <button type="button" @onclick=ButtonOnClick>Продолжить</button>
     }
     else
     {
         @if (AnswerCorrectness != true)
         {
-            <h4>Attempts left: @AnswerAttemptsLeft</h4>
+            <h4>Осталось попыток: @AnswerAttemptsLeft</h4>
         }
-        <button type="button" disabled=@(SendingData || UserComment == "" || UserAnswer == "") @onclick=SendAnswer>Send answer</button>
+        <button type="button" disabled=@(SendingData || UserComment == "" || UserAnswer == "") @onclick=SendAnswer>Ответить</button>
     }
 
 </div>

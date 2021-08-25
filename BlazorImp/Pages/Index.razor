@@ -14,16 +14,16 @@
             <div class="login-box">
                 @if (IncorrectLoginData)
                 {
-                    <p style="color: red;">Incorrect login data; please try again.</p>
+                    <p style="color: red;">Неверные логин и/или пароль; попробуйте снова.</p>
                 }
 
-                <label class="vertical-label" for="answer">Please enter your login:</label>
+                <label class="vertical-label" for="answer">Логин:</label>
                 <input type="text" id="answer" name="answer" @bind=UserLogin @bind:event="oninput"/>
 
-                <label class="vertical-label" for="answer">Please enter your password:</label>
+                <label class="vertical-label" for="answer">Пароль:</label>
                 <input type="password" id="password" name="password" @bind=UserPassword @bind:event="oninput"/>
 
-                <button type="button" disabled=@(UserLogin == "" || UserPassword == "" || SendingData) @onclick="OnLoginButtonClick">Login</button>
+                <button type="button" disabled=@(UserLogin == "" || UserPassword == "" || SendingData) @onclick="OnLoginButtonClick">Войти</button>
             </div>
         </div>
     </div>
