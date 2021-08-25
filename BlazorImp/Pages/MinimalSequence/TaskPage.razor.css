@@ -3,6 +3,7 @@
 
 .main-container {
     margin: 10px 30%;
+    min-width: 600px;
     padding-top: 20px;
     text-align: center;
     align-content: center;
@@ -19,6 +20,10 @@
 label, input, textarea {
     display: block;
     margin: auto;
+}
+
+textarea {
+    width: 100%;
 }
 
 .vertical-label {

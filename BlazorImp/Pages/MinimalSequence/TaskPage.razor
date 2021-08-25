@@ -18,22 +18,22 @@
         }
         else
         {
-            <p style="color:red;">The answer is incorrect.</p>
+            <h4 style="color:red;">The answer is incorrect.</h4>
         }
     }
     else if (AnswerCorrectness == true)
     {
-        <p style="color:forestgreen;">That's right!</p>
+        <h4 style="color:forestgreen;">That's right!</h4>
     }
 
-    <div>
+    <div style="font-size:larger">
         <label for="comment" class="vertical-label">Please explain how you came up with the answer:</label>
-        <textarea disabled=@(SendingData || AnswerAttemptsLeft <= 0 || AnswerCorrectness == true) id="comment" rows="7" cols="80" @bind=UserComment  @bind:event="oninput"/>
+        <textarea disabled=@(SendingData || AnswerAttemptsLeft <= 0 || AnswerCorrectness == true) id="comment" rows="7" @bind=UserComment @bind:event="oninput" />
     </div>
 
-    <div>
+    <div style="font-size:larger">
         <label for="answer" class="vertical-label">Enter the answer:</label>
-        <input type="text" disabled=@(SendingData || AnswerAttemptsLeft <= 0 || AnswerCorrectness == true) id="answer" @bind=UserAnswer  @bind:event="oninput"/>
+        <input type="text" disabled=@(SendingData || AnswerAttemptsLeft <= 0 || AnswerCorrectness == true) id="answer" @bind=UserAnswer @bind:event="oninput" />
     </div>
 
 
@@ -43,10 +43,13 @@
     }
     else
     {
+        @if (AnswerCorrectness != true)
+        {
+            <h4>Attempts left: @AnswerAttemptsLeft</h4>
+        }
         <button type="button" disabled=@(SendingData || UserComment == "" || UserAnswer == "") @onclick=SendAnswer>Send answer</button>
     }
 
-    <p>Attempts left: @AnswerAttemptsLeft</p>
 </div>
 
 @code {
