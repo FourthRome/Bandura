@@ -3,6 +3,7 @@
 @using Microsoft.EntityFrameworkCore
 @using BlazorImp.Models
 @using BlazorImp.Data
+@implements IDisposable
 @inject IDbContextFactory<BlazorImpContext> DbFactory
 
 
@@ -65,6 +66,40 @@ else
     private SessionInfo SessionInfo { get; set; }
     private List<Course> UserCourses { get; set; }
 
+
+    // The following block is written according to the accepted answer here:
+    // https://forums.asp.net/t/2169296.aspx?server+blazor+Handle+event+when+a+user+left+the+page
+    // START
+    private bool _disposed = false;
+
+    public void Dispose() => Dispose(true);
+
+    public void Dispose(bool disposing)
+    {
+        if (_disposed)
+        {
+            return;
+        }
+
+        if (disposing && SessionInfo.UserID != null)
+        {
+            var context = DbFactory.CreateDbContext();
+
+            UserAction action = new()
+            {
+                CourseID = SessionInfo.CourseID,
+                UserID = SessionInfo.UserID.GetValueOrDefault(),  // TODO: It's never default here, make it explicit
+                SourcePageID = null,
+                DestinationPageID = null,
+                Type = ActionType.Logout,
+                Timestamp = DateTime.UtcNow,
+                Message = "User left the website"
+            };
+            context.UserActions.Add(action);
+            context.SaveChanges();
+        }
+    }
+    // END
 
     //---------------
     // Event handlers
