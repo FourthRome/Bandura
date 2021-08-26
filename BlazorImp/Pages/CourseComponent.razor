@@ -228,7 +228,7 @@
                 .FirstAsync();
 
         // Initialize element tree (this part may become implicit)
-        await courseRootSequence.LoadTreeFromDb();
+        await courseRootSequence.LoadTreeFromDb(DbFactory);
 
         // Initialize flat course structure (required for navigation)
         await courseRootSequence.FillFlatCourseTree(SessionInfo.FlatCourseTree);

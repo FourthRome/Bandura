@@ -16,54 +16,48 @@ namespace BlazorImp.Models
         [NotMapped]
         public CourseSequence ParentSequence { get; set; }
         [NotMapped]
-        private BlazorImpContext DbContext { get; set; }  // TODO: Find out if the context here can be lost or preserved for too long
-        [NotMapped]
         private List<ICourseSequenceElement> Sequence { get; set; } = new();
 
-        public CourseSequence()
-        {
-        }
-
-        private CourseSequence(BlazorImpContext dbContext)
-        {
-            DbContext = dbContext;
-        }
-
-        public async Task LoadTreeFromDb()
+        public async Task LoadTreeFromDb(IDbContextFactory<BlazorImpContext> dbFactory)
         {
             // This function is called recursively and is potentially problematic
             // For now I'll try to call it explicitly, which leaves any CourseElement object that is
             // just created not fully initialized (if you don't count empty Sequence property created by default)
-            // var context = DbFactory.CreateDbContext();
-
-            // TODO: Don't rely on DbContext being available, read about options
-            var childrenElementsQuery = from element in DbContext.CourseSequenceElements
-                                        where element.ParentCourseSequenceID == CourseSequenceID
-                                        orderby element.ElementIndex
-                                        select element;
-
-            foreach (CourseSequenceElement element in childrenElementsQuery)
+            using (var context = dbFactory.CreateDbContext())
             {
-                if (element.Type == CourseElementType.Sequence)
+                // TODO: Don't rely on DbContext being available, read about options
+                var childrenElementsQuery = from element in context.CourseSequenceElements
+                                            where element.ParentCourseSequenceID == CourseSequenceID
+                                            orderby element.ElementIndex
+                                            select element;
+
+                List<CourseSequenceElement> elements = await childrenElementsQuery.ToListAsync();
+
+                foreach (CourseSequenceElement element in elements)
                 {
-                    CourseSequence seq = await DbContext.CourseSequences.Where(
-                            s =>
-                            s.CourseSequenceID == element.CourseSequenceID)  // TODO: Make this code null-safe
-                            .FirstAsync();
-                    await seq.LoadTreeFromDb();  // Here is a potential issue, as the tree can technically get recursive
-                    seq.ParentSequence = this;
-                    Sequence.Add(seq);
+                    if (element.Type == CourseElementType.Sequence)
+                    {
+                        CourseSequence seq = await context.CourseSequences.Where(
+                                s =>
+                                s.CourseSequenceID == element.CourseSequenceID)  // TODO: Make this code null-safe
+                                .FirstAsync();
+                        Sequence.Add(seq);
+                    }
+                    else if (element.Type == CourseElementType.Page)
+                    {
+                        Page page = await context.Pages.Where(
+                                p =>
+                                p.PageID == element.PageID)  // TODO: Make this code null-safe
+                                .FirstAsync();
+                        Sequence.Add(page);
+                    }
                 }
-                else if (element.Type == CourseElementType.Page)
-                {
-                    Page page = await DbContext.Pages.Where(
-                            p =>
-                            p.PageID == element.PageID)  // TODO: Make this code null-safe
-                            .FirstAsync();
-                    await page.LoadTreeFromDb();  // There is, however, no problem here, as Pages are leaf nodes
-                    page.ParentSequence = this;
-                    Sequence.Add(page);
-                }
+            }
+
+            foreach (ICourseSequenceElement element in Sequence)
+            {
+                element.ParentSequence = this;
+                await element.LoadTreeFromDb(dbFactory);
             }
         }
 
