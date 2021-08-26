@@ -21,22 +21,16 @@ namespace BlazorImp.Models
         [NotMapped]
         public CourseSequence ParentSequence { get; set; }
         [NotMapped]
-        private BlazorImpContext DbContext { get; set; }  // TODO: Find out if the context here can be lost or preserved for too long
-        [NotMapped]
         public bool ShouldPropagateProgress { get; set; } = true;
 
-        public Page()
-        {
-        }
+        private IDbContextFactory<BlazorImpContext> _dbContextFactory;
 
-        private Page(BlazorImpContext dbContext)
+        public async Task LoadTreeFromDb(IDbContextFactory<BlazorImpContext> dbFactory)
         {
-            DbContext = dbContext;
-        }
-
-
-        public async Task LoadTreeFromDb()
-        {
+            // TODO: This is a REALLY dirty hack
+            // Find a way to refactor this; probably Entities should be left as POCO classes,
+            // not these super-entities
+            _dbContextFactory = dbFactory;
         }
 
         public async Task FillFlatCourseTree(List<Page> tree)
@@ -46,12 +40,13 @@ namespace BlazorImp.Models
 
         public async Task<(int, int)> GetScore(int courseID, int userID, bool calledByParent=true)
         {
+            using var context = _dbContextFactory.CreateDbContext();
             int score = 0;
             int maxScore = 0;
             if (PageType == PageType.TaskPage)
             {
                 maxScore = 1;
-                PageStat stat = await DbContext.PageStats.Where(
+                PageStat stat = await context.PageStats.Where(
                         s =>
                         s.CourseID == courseID &&
                         s.UserID == userID &&
