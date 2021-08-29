@@ -39,7 +39,7 @@
 
     @if (AnswerAttemptsLeft <= 0 || AnswerCorrectness == true)
     {
-        <button type="button" @onclick=ButtonOnClick>Continue</button>
+        <button type="button" @onclick=ButtonOnClick @ref="ContinueButton">Continue</button>
     }
     else
     {
@@ -60,6 +60,7 @@
     private string TaskText { get; set; } = "What is the answer?";
     private string UserAnswer { get; set; } = "";
     private string UserComment { get; set; } = "";
+    private ElementReference ContinueButton { get; set; }
 
     //-------------------------------------
     // Properties that affect UI implicitly
@@ -115,6 +116,14 @@
             AnswerCorrectness = null;
             UserAnswer = "";
             UserComment = "";
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (AnswerAttemptsLeft <= 0 || AnswerCorrectness == true)
+        {
+            await ContinueButton.FocusAsync();
         }
     }
 
