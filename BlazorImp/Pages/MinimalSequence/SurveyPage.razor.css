@@ -1,7 +1,4 @@
-﻿body {
-}
-
-.main-container {
+﻿.main-container {
     margin: 10px 30%;
     padding-top: 20px;
     text-align: center;
@@ -15,6 +12,12 @@
 label, input {
     display: block;
     margin: auto;
+    font-size: 2.5em;
+}
+
+.header {
+    /* TODO: This class should be later replaced with a proper header HTML tag */
+    font-size: 2.5em;
 }
 
 .vertical-label {
@@ -22,13 +25,14 @@ label, input {
 }
 
 button {
-    background-color:forestgreen;
+    background-color: forestgreen;
     color: white;
     padding: 10px 20px;
     border-radius: 5px;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
     border: 2px solid white;
+    font-size: 1.6em;
 }
 
     button:active {

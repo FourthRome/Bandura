@@ -5,7 +5,7 @@
 
 
 <div class="main-container">
-    <h2>@((MarkupString)Header)</h2>
+    <p class="header">@((MarkupString)Header)</p>
 
     <p class="task-text">@((MarkupString)TaskText)</p>
 
@@ -14,24 +14,24 @@
     {
         if (AnswerAttemptsLeft > 0)
         {
-            <p style="color:red;">Неверный ответ; пожалуйста, попробуйте ещё.</p>
+            <p class="submission-feedback" style="color:red;">Неверный ответ; пожалуйста, попробуйте ещё.</p>
         }
         else
         {
-            <h4 style="color:red;">Неверный ответ.</h4>
+            <p class="submission-feedback" style="color: red;">Неверный ответ.</p>
         }
     }
     else if (AnswerCorrectness == true)
     {
-        <h4 style="color:forestgreen;">Правильно!</h4>
+        <p class="submission-feedback" style="color: forestgreen;">Правильно!</p>
     }
 
-    <div style="font-size:larger">
+    <div>
         <label for="comment" class="vertical-label">Пожалуйста, распишите своё решение по шагам:</label>
-        <textarea disabled=@(SendingData || AnswerAttemptsLeft <= 0 || AnswerCorrectness == true) id="comment" rows="7" @bind=UserComment @bind:event="oninput" />
+        <textarea disabled=@(SendingData || AnswerAttemptsLeft <= 0 || AnswerCorrectness == true) id="comment" rows="3" @bind=UserComment @bind:event="oninput" />
     </div>
 
-    <div style="font-size:larger">
+    <div>
         <label for="answer" class="vertical-label">Ваш ответ:</label>
         <input type="text" disabled=@(SendingData || AnswerAttemptsLeft <= 0 || AnswerCorrectness == true) id="answer" @bind=UserAnswer @bind:event="oninput" />
     </div>
@@ -45,7 +45,7 @@
     {
         @if (AnswerCorrectness != true)
         {
-            <h4>Осталось попыток: @AnswerAttemptsLeft</h4>
+            <p class="submission-feedback">Осталось попыток: @AnswerAttemptsLeft</p>
         }
         <button type="button" disabled=@(SendingData || UserComment == "" || UserAnswer == "") @onclick=SendAnswer>Ответить</button>
     }
