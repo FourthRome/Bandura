@@ -1,10 +1,12 @@
-﻿body {
-}
-
-.main-container {
+﻿.main-container {
     margin: 10px 30%;
     padding-top: 20px;
     text-align: center;
+}
+
+.header {
+    /* TODO: This class should be later replaced with a proper header HTML tag */
+    font-size: 2.5em;
 }
 
 h2 {

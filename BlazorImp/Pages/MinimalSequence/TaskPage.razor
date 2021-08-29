@@ -5,7 +5,7 @@
 
 
 <div class="main-container">
-    <h2>@((MarkupString)Header)</h2>
+    <p class="header">@((MarkupString)Header)</p>
 
     <p class="task-text">@((MarkupString)TaskText)</p>
 
@@ -14,24 +14,24 @@
     {
         if (AnswerAttemptsLeft > 0)
         {
-            <p style="color:red;">The answer is incorrect; please try again.</p>
+            <p class="submission-feedback" style="color:red;">The answer is incorrect; please try again.</p>
         }
         else
         {
-            <h4 style="color:red;">The answer is incorrect.</h4>
+            <p class="submission-feedback" style="color: red;">The answer is incorrect.</p>
         }
     }
     else if (AnswerCorrectness == true)
     {
-        <h4 style="color:forestgreen;">That's right!</h4>
+        <p class="submission-feedback" style="color: forestgreen;">That's right!</p>
     }
 
-    <div style="font-size:larger">
+    <div>
         <label for="comment" class="vertical-label">Please explain how you came up with the answer:</label>
-        <textarea disabled=@(SendingData || AnswerAttemptsLeft <= 0 || AnswerCorrectness == true) id="comment" rows="7" @bind=UserComment @bind:event="oninput" />
+        <textarea disabled=@(SendingData || AnswerAttemptsLeft <= 0 || AnswerCorrectness == true) id="comment" rows="3" @bind=UserComment @bind:event="oninput" />
     </div>
 
-    <div style="font-size:larger">
+    <div>
         <label for="answer" class="vertical-label">Enter the answer:</label>
         <input type="text" disabled=@(SendingData || AnswerAttemptsLeft <= 0 || AnswerCorrectness == true) id="answer" @bind=UserAnswer @bind:event="oninput" />
     </div>
@@ -45,7 +45,7 @@
     {
         @if (AnswerCorrectness != true)
         {
-            <h4>Attempts left: @AnswerAttemptsLeft</h4>
+            <p class="submission-feedback">Attempts left: @AnswerAttemptsLeft</p>
         }
         <button type="button" disabled=@(SendingData || UserComment == "" || UserAnswer == "") @onclick=SendAnswer>Send answer</button>
     }
