@@ -82,6 +82,12 @@
 
     protected override async Task OnParametersSetAsync()
     {
+        if (Model == null)
+        {
+            return;
+        }
+
+
         // Map Model's data to UI
         Header = Model.Header;
         TaskText = Model.TaskText;
