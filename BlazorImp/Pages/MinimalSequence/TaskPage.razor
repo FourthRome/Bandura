@@ -122,6 +122,18 @@
             AnswerCorrectness = null;
             UserAnswer = "";
             UserComment = "";
+
+            UserAction action = new UserAction
+            {
+                CourseID = SessionInfo.CourseID,
+                UserID = SessionInfo.UserID.GetValueOrDefault(), // TODO: It's never really default; make that explicit
+                SourcePageID = SessionInfo.FlatCourseTree[SessionInfo.StepNumber].PageID,  // TODO: Introduce this functionality into SessionInfo directly
+                Type = ActionType.StartTask,
+                Timestamp = DateTime.UtcNow,
+                Message = $"Starting the task for the first time"
+            };
+            context.UserActions.Add(action);
+            await context.SaveChangesAsync();
         }
     }
 
@@ -182,18 +194,36 @@
             Message = $"Sending task answer; is answer correct: { AnswerCorrectness ?? false }"
         };
         context.UserActions.Add(action);
-
         await context.SaveChangesAsync();
+
+        AttemptNumber += 1;
+        AnswerAttemptsLeft -= 1;
+
+        if (AnswerAttemptsLeft <= 0 || AnswerCorrectness == true)
+        {
+            UserAction finishingTask = new UserAction
+            {
+                CourseID = SessionInfo.CourseID,
+                UserID = SessionInfo.UserID.GetValueOrDefault(), // TODO: It's never really default; make that explicit
+                SourcePageID = SessionInfo.FlatCourseTree[SessionInfo.StepNumber].PageID,  // TODO: Introduce this functionality into SessionInfo directly
+                Type = ActionType.FinishTask,
+                Timestamp = DateTime.UtcNow,
+                Message = $"Finished the task; correct answer given: {AnswerCorrectness}"
+            };
+            context.UserActions.Add(finishingTask);
+            await context.SaveChangesAsync();
+        }
+
 
         // Save stat
         // TODO: Add a method to the SessionInfo class to retrieve info
         // about current Page more easily
         PageStat stat = await context.PageStats.Where(
-                s =>
-                s.CourseID == SessionInfo.CourseID &&
-                s.UserID == SessionInfo.UserID &&
-                s.PageID == SessionInfo.FlatCourseTree[SessionInfo.StepNumber].PageID)
-                .FirstOrDefaultAsync();
+            s =>
+            s.CourseID == SessionInfo.CourseID &&
+            s.UserID == SessionInfo.UserID &&
+            s.PageID == SessionInfo.FlatCourseTree[SessionInfo.StepNumber].PageID)
+            .FirstOrDefaultAsync();
 
         if (stat != null)
         {
@@ -212,9 +242,6 @@
         }
 
         await context.SaveChangesAsync();
-
-        AttemptNumber += 1;
-        AnswerAttemptsLeft -= 1;
 
         SendingData = false;
     }

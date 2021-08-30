@@ -79,6 +79,18 @@
 
         if (lastPage != null)
         {
+            UserAction action = new UserAction
+            {
+                CourseID = SessionInfo.CourseID,
+                UserID = SessionInfo.UserID.GetValueOrDefault(), // TODO: It's never really default; make that explicit
+                DestinationPageID = SessionInfo.FlatCourseTree[lastPage.StepNumber].PageID,  // TODO: Introduce this functionality into SessionInfo directly
+                Type = ActionType.GoToLastStep,
+                Timestamp = DateTime.UtcNow,
+                Message = $"Coming back to the last available page after logging in"
+            };
+            context.UserActions.Add(action);
+            await context.SaveChangesAsync();
+
             // TODO: Is this redundant, or we do need both these fields?
             SessionInfo.LastStepNumber = lastPage.StepNumber;
             SessionInfo.StepNumber = lastPage.StepNumber;
@@ -151,7 +163,7 @@
                 case PageType.VideoPage:
                     VideoPage = await context.VideoPageModels.Where(
                         m => m.VideoPageModelID == page.VideoPageModelID).FirstOrDefaultAsync();
-                   break;
+                    break;
                 case PageType.TaskPage:
                     TaskPage = await context.TaskPageModels.Where(
                         m => m.TaskPageModelID == page.TaskPageModelID).FirstOrDefaultAsync();
@@ -168,9 +180,22 @@
 
     public async Task GoToNextStep()
     {
+        var context = DbFactory.CreateDbContext();
+        UserAction action = new UserAction
+        {
+            CourseID = SessionInfo.CourseID,
+            UserID = SessionInfo.UserID.GetValueOrDefault(), // TODO: It's never really default; make that explicit
+            SourcePageID = SessionInfo.FlatCourseTree[SessionInfo.StepNumber].PageID,  // TODO: Introduce this functionality into SessionInfo directly
+            DestinationPageID = SessionInfo.FlatCourseTree[SessionInfo.StepNumber + 1].PageID,  // TODO: Introduce this functionality into SessionInfo directly
+            Type = ActionType.GoToNextStep,
+            Timestamp = DateTime.UtcNow,
+            Message = $"Leaving the page, proceeding to the next"
+        };
+        context.UserActions.Add(action);
+        await context.SaveChangesAsync();
+
         SessionInfo.StepNumber++;
 
-        var context = DbFactory.CreateDbContext();
         var page = await context.UserLastPages.Where(
                 p =>
                 p.CourseID == SessionInfo.CourseID &&
@@ -207,12 +232,40 @@
 
     public async Task GoToStep(int stepNumber)
     {
+        var context = DbFactory.CreateDbContext();
+        UserAction action = new UserAction
+        {
+            CourseID = SessionInfo.CourseID,
+            UserID = SessionInfo.UserID.GetValueOrDefault(), // TODO: It's never really default; make that explicit
+            SourcePageID = SessionInfo.FlatCourseTree[SessionInfo.StepNumber].PageID,  // TODO: Introduce this functionality into SessionInfo directly
+            DestinationPageID = SessionInfo.FlatCourseTree[stepNumber].PageID,  // TODO: Introduce this functionality into SessionInfo directly
+            Type = ActionType.GoToMaterial,
+            Timestamp = DateTime.UtcNow,
+            Message = $"Leaving the page to watch some material"
+        };
+        context.UserActions.Add(action);
+        await context.SaveChangesAsync();
+
         SessionInfo.StepNumber = stepNumber;
         await LoadCurrentStep();
     }
 
     public async Task GoToLastStep()
     {
+        var context = DbFactory.CreateDbContext();
+        UserAction action = new UserAction
+        {
+            CourseID = SessionInfo.CourseID,
+            UserID = SessionInfo.UserID.GetValueOrDefault(), // TODO: It's never really default; make that explicit
+            SourcePageID = SessionInfo.FlatCourseTree[SessionInfo.StepNumber].PageID,  // TODO: Introduce this functionality into SessionInfo directly
+            DestinationPageID = SessionInfo.FlatCourseTree[SessionInfo.LastStepNumber].PageID,  // TODO: Introduce this functionality into SessionInfo directly
+            Type = ActionType.GoToLastStep,
+            Timestamp = DateTime.UtcNow,
+            Message = $"Coming back to the last available page"
+        };
+        context.UserActions.Add(action);
+        await context.SaveChangesAsync();
+
         SessionInfo.StepNumber = SessionInfo.LastStepNumber;
         await LoadCurrentStep();
     }
