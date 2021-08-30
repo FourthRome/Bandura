@@ -139,10 +139,10 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (AnswerAttemptsLeft <= 0 || AnswerCorrectness == true)
-        {
-            await ContinueButton.FocusAsync();
-        }
+        //if (AnswerAttemptsLeft <= 0 || AnswerCorrectness == true)
+        //{
+        //    await ContinueButton.FocusAsync();
+        //}
     }
 
     private async Task SendAnswer()
