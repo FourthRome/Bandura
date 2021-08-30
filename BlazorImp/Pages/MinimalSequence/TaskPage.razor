@@ -140,7 +140,7 @@
             return;
         }
 
-        // TODO: This is smely code, find a fix
+        // TODO: This is smelly code, find a fix
         SendingData = true;
 
         var context = DbFactory.CreateDbContext();
@@ -168,6 +168,21 @@
         };
 
         context.TaskAttempts.Add(attempt);
+        await context.SaveChangesAsync();
+
+        UserAction action = new UserAction
+        {
+            CourseID = SessionInfo.CourseID,
+            UserID = SessionInfo.UserID.GetValueOrDefault(), // TODO: It's never really default; make that explicit
+            SourcePageID = SessionInfo.FlatCourseTree[SessionInfo.StepNumber].PageID,  // TODO: Introduce this functionality into SessionInfo directly
+            DestinationPageID = null,
+            TaskAttemptID = attempt.TaskAttemptID,
+            Type = ActionType.SendTaskAnswer,
+            Timestamp = DateTime.UtcNow,
+            Message = $"Sending task answer; is answer correct: { AnswerCorrectness ?? false }"
+        };
+        context.UserActions.Add(action);
+
         await context.SaveChangesAsync();
 
         // Save stat

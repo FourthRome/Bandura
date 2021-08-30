@@ -12,6 +12,7 @@ namespace BlazorImp.Models
         public int UserID { get; set; }
         public int? SourcePageID { get; set; }
         public int? DestinationPageID { get; set; }
+        public int? TaskAttemptID { get; set; }
         public ActionType Type { get; set; }
         public DateTime Timestamp { get; set; }
         public string Message { get; set; }
