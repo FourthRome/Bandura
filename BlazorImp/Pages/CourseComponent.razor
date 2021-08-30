@@ -71,6 +71,12 @@
                 p.UserID == SessionInfo.UserID
                 ).FirstOrDefaultAsync();
 
+        // TODO: Can we make this less computationally expensive?
+        // This line should never be executed at all, but I've seen
+        // menu items duplicating, so there is to be some sort of extra
+        // OnParametersSetAsync call
+        SessionInfo.MenuItems = new List<MenuItem>();
+
         if (lastPage != null)
         {
             // TODO: Is this redundant, or we do need both these fields?
