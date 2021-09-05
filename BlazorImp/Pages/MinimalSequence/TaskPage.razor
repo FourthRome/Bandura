@@ -39,7 +39,7 @@
 
     @if (AnswerAttemptsLeft <= 0 || AnswerCorrectness == true)
     {
-        <button type="button" @onclick=ButtonOnClick @ref="ContinueButton">Продолжить</button>
+        <button type="button" @onclick=OnContinueButtonClick @ref="ContinueButton">Продолжить</button>
     }
     else
     {
@@ -248,8 +248,24 @@
     }
 
 
-    private async Task ButtonOnClick()
+    private async Task OnContinueButtonClick()
     {
-        await GoToNextStep.InvokeAsync();
+        var context = DbFactory.CreateDbContext();
+
+        PageStat confirmationStat = await context.PageStats.Where(
+                s =>
+                s.CourseID == SessionInfo.CourseID
+                && s.PageID == SessionInfo.FlatCourseTree[SessionInfo.StepNumber].PageID
+                && s.UserID == SessionInfo.UserID)
+                .FirstOrDefaultAsync();
+
+        if (confirmationStat != null)
+        {
+            await GoToNextStep.InvokeAsync();
+        }
+        else
+        {
+            StateHasChanged();
+        }
     }
 }
